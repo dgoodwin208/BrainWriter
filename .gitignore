@@ -1,13 +1,38 @@
-# Compiled Object files
-*.slo
-*.lo
-*.o
+*.py[co]
 
-# Compiled Dynamic libraries
-*.so
-*.dylib
+# Packages
+*.egg
+*.egg-info
+dist
+build
+eggs
+parts
+bin
+var
+sdist
+develop-eggs
+.installed.cfg
 
-# Compiled Static libraries
-*.lai
-*.la
-*.a
+# Installer logs
+pip-log.txt
+
+# Unit test / coverage reports
+.coverage
+.tox
+*.log
+
+#Translations
+*.mo
+
+#Mr Developer
+.mr.developer.cfg
+
+#virtualenv folder
+env
+*.py
+
+#idea ide
+.idea
+
+#local environment files
+*.env
