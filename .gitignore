@@ -29,7 +29,6 @@ pip-log.txt
 
 #virtualenv folder
 env
-*.py
 
 #idea ide
 .idea
