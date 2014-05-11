@@ -12,77 +12,9 @@
 
 #include "ofMain.h"
 #include <math.h>
-//#include "processing_math.h"
+#include "ofxGui.h"
+#include "drawnLetter.h"
 
-//Particle class
-class Particle {
-public:
-	Particle();                //Class constructor
-	void setup();              //Start particle
-	void update( float dt );   //Recalculate physics
-	void draw();               //Draw particle
-    
-	ofPoint pos;               //Position
-	ofPoint vel;               //Velocity
-	float time;                //Time of living
-	float lifeTime;            //Allowed lifetime
-	bool live;                 //Is particle live
-};
-
-//Control parameters class
-class Params {
-public:
-	void setup();
-	ofPoint eCenter;    //Emitter center
-	float eRad;         //Emitter radius
-	float velRad;       //Initial velocity limit
-	float lifeTime;     //Lifetime in seconds
-    
-	float rotate;   //Direction rotation speed in angles per second
-    
-	float force;       //Attraction/repulsion force inside emitter
-	float spinning;    //Spinning force inside emitter
-	float friction;    //Friction, in the range [0, 1]
-};
-
-//Control parameters class
-class DrawnLetter {
-public:
-    DrawnLetter();
-    void setup();
-    void deleteLast();
-    void draw();
-    void closeShape();
-    void update();
-    bool handleClick(ofPoint clickPos);
-    void showSampleLine(ofPoint mousePos);
-    void makeBend(int idx, ofPoint mousePos);
-    void setLineBend(int lineIdx);
-    
-	ofPolyline createLineSegment(ofPoint a, ofPoint b, ofPoint mid);
-    
-    ofColor color;
-    vector<ofPolyline> lines;
-    vector<ofPoint> verts;
-    
-    bool isComplete;
-    int bendIdx; //-1 by default
-    
-    //Particle goodness:
-    vector<Particle> p;	  //Particles
-	ofFbo fbo;            //Off-screen buffer for trails
-    
-	float history;        //Control parameter for trails
-	float time0;          //Time value for computing dt
-    
-	float bornRate;       //Particles born rate per second
-	float bornCount;      //Integrated number of particles to born
-    
-    
-    
-};
-
-extern Params param; //Declaration a of global variable
 
 
 //openFrameworks' class
