@@ -7,7 +7,7 @@ dist
 build
 eggs
 parts
-bin
+#bin for oF we want to keep what's in the data folder
 var
 sdist
 develop-eggs
