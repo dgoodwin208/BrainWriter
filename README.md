@@ -1,1 +1,3 @@
-The xCode version of the code base for the eye-based drawing application
+The Betamaker OpenFrameworks project is for eliciting beta waves and storing the data in a way that can be used down the road
+
+
