@@ -11,4 +11,4 @@ Note:
 + This will store a log file on the desktop. The "~/" notation is hardcoded in the sample code, so this would likely cause issues if ran on a windows machine.
 
 Credit: 
-Props to Jon Weisz for his work writing a c++ wrapper for OpenBCI, which was adapted to work in the OpenFrameworks context 
+Props to Jon Weisz for his work writing a c++ wrapper for OpenBCI, which was adapted to work in the OpenFrameworks context: https://github.com/jon-weisz/openbci/tree/master/libopenbci 
