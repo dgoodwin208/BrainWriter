@@ -37,10 +37,6 @@
 
 #define MINIMUM_SETTLE_TIME 3
 
-#define PARSE_APP_ID "5dxsQnzaE0t0fa8vLnxlLTCFbtHahj3W6sUyFBCD"
-#define PARSE_REST_KEY "jql1e1kCDFpas3uQxCPqKpZnq5FJAfRzOXcSwPyc"
-#define PARSE_MASTER_KEY "Eg2HlF7ea5QgsgmaeyaRkNTg3ycMrK2i71puMDd9"
-
 
 //------------------------------------------------------------------------------
 void ofApp::setup()

@@ -13,7 +13,8 @@
 // board because the Arduino itself handles the differences between the two.  The
 // command format to the Arduino and the data format from the Arduino are the same.
 //
-//
+// Serial C++ code adapted from Jon Weisz's code here
+//          available here: https://github.com/jon-weisz/openbci/tree/master/libopenbci
 // Morphed from OpenBCI_ADS1299 to ofxOpenBCI by Daniel Goodwin, May 2014
 /////////////////////////////////////////////////////////////////////////////
 
