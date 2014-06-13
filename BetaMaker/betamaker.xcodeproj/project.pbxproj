@@ -7,12 +7,24 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		1183BD651930703800D3F98A /* ofxOpenBCI.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1183BD631930703800D3F98A /* ofxOpenBCI.cpp */; };
+		119459C719440EC000D08C14 /* ByteBuffer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 119459AB19440EC000D08C14 /* ByteBuffer.cpp */; };
+		119459C819440EC000D08C14 /* ByteBufferUtils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 119459AC19440EC000D08C14 /* ByteBufferUtils.cpp */; };
+		119459C919440EC000D08C14 /* Compression.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 119459AD19440EC000D08C14 /* Compression.cpp */; };
+		119459CA19440EC000D08C14 /* DeviceFilter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 119459AE19440EC000D08C14 /* DeviceFilter.cpp */; };
+		119459CB19440EC000D08C14 /* DirectoryFilter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 119459AF19440EC000D08C14 /* DirectoryFilter.cpp */; };
+		119459CC19440EC000D08C14 /* DirectoryUtils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 119459B019440EC000D08C14 /* DirectoryUtils.cpp */; };
+		119459CD19440EC000D08C14 /* DirectoryWatcherManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 119459B119440EC000D08C14 /* DirectoryWatcherManager.cpp */; };
+		119459CE19440EC000D08C14 /* Encoding.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 119459B219440EC000D08C14 /* Encoding.cpp */; };
+		119459CF19440EC000D08C14 /* FileExtensionFilter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 119459B319440EC000D08C14 /* FileExtensionFilter.cpp */; };
+		119459D019440EC000D08C14 /* HiddenFileFilter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 119459B419440EC000D08C14 /* HiddenFileFilter.cpp */; };
+		119459D119440EC000D08C14 /* LinkFilter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 119459B519440EC000D08C14 /* LinkFilter.cpp */; };
+		119459D219440EC000D08C14 /* PathFilterCollection.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 119459B619440EC000D08C14 /* PathFilterCollection.cpp */; };
+		119459D319440EC000D08C14 /* RegexPathFilter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 119459B719440EC000D08C14 /* RegexPathFilter.cpp */; };
+		119459D419440EC000D08C14 /* SearchPath.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 119459B819440EC000D08C14 /* SearchPath.cpp */; };
+		119459D519440EC000D08C14 /* DirectoryWatcher.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 119459C219440EC000D08C14 /* DirectoryWatcher.cpp */; };
+		119459D619440EC000D08C14 /* RecursiveDirectoryIterator.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 119459C319440EC000D08C14 /* RecursiveDirectoryIterator.cpp */; };
+		119459D719440EC000D08C14 /* RecursiveDirectoryIteratorStategies.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 119459C419440EC000D08C14 /* RecursiveDirectoryIteratorStategies.cpp */; };
 		BBAB23CB13894F3D00AA2426 /* GLUT.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = BBAB23BE13894E4700AA2426 /* GLUT.framework */; };
-		D6F08D09183849870056FB29 /* tinyxml.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D6F08D02183849870056FB29 /* tinyxml.cpp */; };
-		D6F08D0A183849870056FB29 /* tinyxmlerror.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D6F08D04183849870056FB29 /* tinyxmlerror.cpp */; };
-		D6F08D0B183849870056FB29 /* tinyxmlparser.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D6F08D05183849870056FB29 /* tinyxmlparser.cpp */; };
-		D6F08D0C183849870056FB29 /* ofxXmlSettings.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D6F08D07183849870056FB29 /* ofxXmlSettings.cpp */; };
 		E4328149138ABC9F0047C5CB /* openFrameworksDebug.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E4328148138ABC890047C5CB /* openFrameworksDebug.a */; };
 		E45BE97B0E8CC7DD009D7055 /* AGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E45BE9710E8CC7DD009D7055 /* AGL.framework */; };
 		E45BE97C0E8CC7DD009D7055 /* ApplicationServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E45BE9720E8CC7DD009D7055 /* ApplicationServices.framework */; };
@@ -65,15 +77,49 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		1183BD631930703800D3F98A /* ofxOpenBCI.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ofxOpenBCI.cpp; sourceTree = "<group>"; };
-		1183BD641930703800D3F98A /* ofxOpenBCI.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ofxOpenBCI.h; sourceTree = "<group>"; };
+		1194598E19440EC000D08C14 /* .gitignore */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = .gitignore; sourceTree = "<group>"; };
+		1194598F19440EC000D08C14 /* addon_config.mk */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = addon_config.mk; sourceTree = "<group>"; };
+		1194599119440EC000D08C14 /* Doxyfile */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Doxyfile; sourceTree = "<group>"; };
+		1194599519440EC000D08C14 /* alphanum.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = alphanum.hpp; sourceTree = "<group>"; };
+		1194599A19440EC000D08C14 /* AbstractDataView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AbstractDataView.h; sourceTree = "<group>"; };
+		1194599B19440EC000D08C14 /* AbstractTypes.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AbstractTypes.h; sourceTree = "<group>"; };
+		1194599C19440EC000D08C14 /* ByteBuffer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ByteBuffer.h; sourceTree = "<group>"; };
+		1194599D19440EC000D08C14 /* ByteBufferUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ByteBufferUtils.h; sourceTree = "<group>"; };
+		1194599E19440EC000D08C14 /* Compression.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Compression.h; sourceTree = "<group>"; };
+		1194599F19440EC000D08C14 /* DeviceFilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DeviceFilter.h; sourceTree = "<group>"; };
+		119459A019440EC000D08C14 /* DirectoryFilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DirectoryFilter.h; sourceTree = "<group>"; };
+		119459A119440EC000D08C14 /* DirectoryUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DirectoryUtils.h; sourceTree = "<group>"; };
+		119459A219440EC000D08C14 /* DirectoryWatcherManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DirectoryWatcherManager.h; sourceTree = "<group>"; };
+		119459A319440EC000D08C14 /* Encoding.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Encoding.h; sourceTree = "<group>"; };
+		119459A419440EC000D08C14 /* FileExtensionFilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FileExtensionFilter.h; sourceTree = "<group>"; };
+		119459A519440EC000D08C14 /* HiddenFileFilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HiddenFileFilter.h; sourceTree = "<group>"; };
+		119459A619440EC000D08C14 /* LinkFilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LinkFilter.h; sourceTree = "<group>"; };
+		119459A719440EC000D08C14 /* PathFilterCollection.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PathFilterCollection.h; sourceTree = "<group>"; };
+		119459A819440EC000D08C14 /* RegexPathFilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RegexPathFilter.h; sourceTree = "<group>"; };
+		119459A919440EC000D08C14 /* SearchPath.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SearchPath.h; sourceTree = "<group>"; };
+		119459AB19440EC000D08C14 /* ByteBuffer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ByteBuffer.cpp; sourceTree = "<group>"; };
+		119459AC19440EC000D08C14 /* ByteBufferUtils.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ByteBufferUtils.cpp; sourceTree = "<group>"; };
+		119459AD19440EC000D08C14 /* Compression.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Compression.cpp; sourceTree = "<group>"; };
+		119459AE19440EC000D08C14 /* DeviceFilter.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DeviceFilter.cpp; sourceTree = "<group>"; };
+		119459AF19440EC000D08C14 /* DirectoryFilter.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DirectoryFilter.cpp; sourceTree = "<group>"; };
+		119459B019440EC000D08C14 /* DirectoryUtils.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DirectoryUtils.cpp; sourceTree = "<group>"; };
+		119459B119440EC000D08C14 /* DirectoryWatcherManager.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DirectoryWatcherManager.cpp; sourceTree = "<group>"; };
+		119459B219440EC000D08C14 /* Encoding.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Encoding.cpp; sourceTree = "<group>"; };
+		119459B319440EC000D08C14 /* FileExtensionFilter.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = FileExtensionFilter.cpp; sourceTree = "<group>"; };
+		119459B419440EC000D08C14 /* HiddenFileFilter.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = HiddenFileFilter.cpp; sourceTree = "<group>"; };
+		119459B519440EC000D08C14 /* LinkFilter.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = LinkFilter.cpp; sourceTree = "<group>"; };
+		119459B619440EC000D08C14 /* PathFilterCollection.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PathFilterCollection.cpp; sourceTree = "<group>"; };
+		119459B719440EC000D08C14 /* RegexPathFilter.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = RegexPathFilter.cpp; sourceTree = "<group>"; };
+		119459B819440EC000D08C14 /* SearchPath.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = SearchPath.cpp; sourceTree = "<group>"; };
+		119459BD19440EC000D08C14 /* DirectoryWatcher.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DirectoryWatcher.h; sourceTree = "<group>"; };
+		119459BE19440EC000D08C14 /* RecursiveDirectoryIterator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RecursiveDirectoryIterator.h; sourceTree = "<group>"; };
+		119459BF19440EC000D08C14 /* RecursiveDirectoryIteratorImpl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RecursiveDirectoryIteratorImpl.h; sourceTree = "<group>"; };
+		119459C019440EC000D08C14 /* RecursiveDirectoryIteratorStategies.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RecursiveDirectoryIteratorStategies.h; sourceTree = "<group>"; };
+		119459C219440EC000D08C14 /* DirectoryWatcher.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DirectoryWatcher.cpp; sourceTree = "<group>"; };
+		119459C319440EC000D08C14 /* RecursiveDirectoryIterator.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = RecursiveDirectoryIterator.cpp; sourceTree = "<group>"; };
+		119459C419440EC000D08C14 /* RecursiveDirectoryIteratorStategies.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = RecursiveDirectoryIteratorStategies.cpp; sourceTree = "<group>"; };
+		119459C619440EC000D08C14 /* ofxIO.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ofxIO.h; sourceTree = "<group>"; };
 		BBAB23BE13894E4700AA2426 /* GLUT.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GLUT.framework; path = ../../../libs/glut/lib/osx/GLUT.framework; sourceTree = "<group>"; };
-		D6F08D02183849870056FB29 /* tinyxml.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = tinyxml.cpp; sourceTree = "<group>"; };
-		D6F08D03183849870056FB29 /* tinyxml.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = tinyxml.h; sourceTree = "<group>"; };
-		D6F08D04183849870056FB29 /* tinyxmlerror.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = tinyxmlerror.cpp; sourceTree = "<group>"; };
-		D6F08D05183849870056FB29 /* tinyxmlparser.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = tinyxmlparser.cpp; sourceTree = "<group>"; };
-		D6F08D07183849870056FB29 /* ofxXmlSettings.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ofxXmlSettings.cpp; sourceTree = "<group>"; };
-		D6F08D08183849870056FB29 /* ofxXmlSettings.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ofxXmlSettings.h; sourceTree = "<group>"; };
 		E4328143138ABC890047C5CB /* openFrameworksLib.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = openFrameworksLib.xcodeproj; path = ../../../libs/openFrameworksCompiled/project/osx/openFrameworksLib.xcodeproj; sourceTree = SOURCE_ROOT; };
 		E45BE9710E8CC7DD009D7055 /* AGL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AGL.framework; path = /System/Library/Frameworks/AGL.framework; sourceTree = "<absolute>"; };
 		E45BE9720E8CC7DD009D7055 /* ApplicationServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ApplicationServices.framework; path = /System/Library/Frameworks/ApplicationServices.framework; sourceTree = "<absolute>"; };
@@ -127,20 +173,172 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		1183BD611930703800D3F98A /* ofxOpenBCI */ = {
+		1194598D19440EC000D08C14 /* ofxIO */ = {
 			isa = PBXGroup;
 			children = (
-				1183BD621930703800D3F98A /* src */,
+				1194598E19440EC000D08C14 /* .gitignore */,
+				1194598F19440EC000D08C14 /* addon_config.mk */,
+				1194599019440EC000D08C14 /* docs */,
+				1194599219440EC000D08C14 /* libs */,
+				119459C519440EC000D08C14 /* src */,
 			);
-			name = ofxOpenBCI;
-			path = ../../../addons/ofxOpenBCI;
+			name = ofxIO;
+			path = ../../../addons/ofxIO;
 			sourceTree = "<group>";
 		};
-		1183BD621930703800D3F98A /* src */ = {
+		1194599019440EC000D08C14 /* docs */ = {
 			isa = PBXGroup;
 			children = (
-				1183BD631930703800D3F98A /* ofxOpenBCI.cpp */,
-				1183BD641930703800D3F98A /* ofxOpenBCI.h */,
+				1194599119440EC000D08C14 /* Doxyfile */,
+			);
+			path = docs;
+			sourceTree = "<group>";
+		};
+		1194599219440EC000D08C14 /* libs */ = {
+			isa = PBXGroup;
+			children = (
+				1194599319440EC000D08C14 /* alphanum */,
+				1194599619440EC000D08C14 /* ofxIO */,
+				119459B919440EC000D08C14 /* Poco */,
+			);
+			path = libs;
+			sourceTree = "<group>";
+		};
+		1194599319440EC000D08C14 /* alphanum */ = {
+			isa = PBXGroup;
+			children = (
+				1194599419440EC000D08C14 /* include */,
+			);
+			path = alphanum;
+			sourceTree = "<group>";
+		};
+		1194599419440EC000D08C14 /* include */ = {
+			isa = PBXGroup;
+			children = (
+				1194599519440EC000D08C14 /* alphanum.hpp */,
+			);
+			path = include;
+			sourceTree = "<group>";
+		};
+		1194599619440EC000D08C14 /* ofxIO */ = {
+			isa = PBXGroup;
+			children = (
+				1194599719440EC000D08C14 /* include */,
+				119459AA19440EC000D08C14 /* src */,
+			);
+			path = ofxIO;
+			sourceTree = "<group>";
+		};
+		1194599719440EC000D08C14 /* include */ = {
+			isa = PBXGroup;
+			children = (
+				1194599819440EC000D08C14 /* ofx */,
+			);
+			path = include;
+			sourceTree = "<group>";
+		};
+		1194599819440EC000D08C14 /* ofx */ = {
+			isa = PBXGroup;
+			children = (
+				1194599919440EC000D08C14 /* IO */,
+			);
+			path = ofx;
+			sourceTree = "<group>";
+		};
+		1194599919440EC000D08C14 /* IO */ = {
+			isa = PBXGroup;
+			children = (
+				1194599A19440EC000D08C14 /* AbstractDataView.h */,
+				1194599B19440EC000D08C14 /* AbstractTypes.h */,
+				1194599C19440EC000D08C14 /* ByteBuffer.h */,
+				1194599D19440EC000D08C14 /* ByteBufferUtils.h */,
+				1194599E19440EC000D08C14 /* Compression.h */,
+				1194599F19440EC000D08C14 /* DeviceFilter.h */,
+				119459A019440EC000D08C14 /* DirectoryFilter.h */,
+				119459A119440EC000D08C14 /* DirectoryUtils.h */,
+				119459A219440EC000D08C14 /* DirectoryWatcherManager.h */,
+				119459A319440EC000D08C14 /* Encoding.h */,
+				119459A419440EC000D08C14 /* FileExtensionFilter.h */,
+				119459A519440EC000D08C14 /* HiddenFileFilter.h */,
+				119459A619440EC000D08C14 /* LinkFilter.h */,
+				119459A719440EC000D08C14 /* PathFilterCollection.h */,
+				119459A819440EC000D08C14 /* RegexPathFilter.h */,
+				119459A919440EC000D08C14 /* SearchPath.h */,
+			);
+			path = IO;
+			sourceTree = "<group>";
+		};
+		119459AA19440EC000D08C14 /* src */ = {
+			isa = PBXGroup;
+			children = (
+				119459AB19440EC000D08C14 /* ByteBuffer.cpp */,
+				119459AC19440EC000D08C14 /* ByteBufferUtils.cpp */,
+				119459AD19440EC000D08C14 /* Compression.cpp */,
+				119459AE19440EC000D08C14 /* DeviceFilter.cpp */,
+				119459AF19440EC000D08C14 /* DirectoryFilter.cpp */,
+				119459B019440EC000D08C14 /* DirectoryUtils.cpp */,
+				119459B119440EC000D08C14 /* DirectoryWatcherManager.cpp */,
+				119459B219440EC000D08C14 /* Encoding.cpp */,
+				119459B319440EC000D08C14 /* FileExtensionFilter.cpp */,
+				119459B419440EC000D08C14 /* HiddenFileFilter.cpp */,
+				119459B519440EC000D08C14 /* LinkFilter.cpp */,
+				119459B619440EC000D08C14 /* PathFilterCollection.cpp */,
+				119459B719440EC000D08C14 /* RegexPathFilter.cpp */,
+				119459B819440EC000D08C14 /* SearchPath.cpp */,
+			);
+			path = src;
+			sourceTree = "<group>";
+		};
+		119459B919440EC000D08C14 /* Poco */ = {
+			isa = PBXGroup;
+			children = (
+				119459BA19440EC000D08C14 /* Foundation */,
+				119459C119440EC000D08C14 /* src */,
+			);
+			path = Poco;
+			sourceTree = "<group>";
+		};
+		119459BA19440EC000D08C14 /* Foundation */ = {
+			isa = PBXGroup;
+			children = (
+				119459BB19440EC000D08C14 /* include */,
+			);
+			path = Foundation;
+			sourceTree = "<group>";
+		};
+		119459BB19440EC000D08C14 /* include */ = {
+			isa = PBXGroup;
+			children = (
+				119459BC19440EC000D08C14 /* Poco */,
+			);
+			path = include;
+			sourceTree = "<group>";
+		};
+		119459BC19440EC000D08C14 /* Poco */ = {
+			isa = PBXGroup;
+			children = (
+				119459BD19440EC000D08C14 /* DirectoryWatcher.h */,
+				119459BE19440EC000D08C14 /* RecursiveDirectoryIterator.h */,
+				119459BF19440EC000D08C14 /* RecursiveDirectoryIteratorImpl.h */,
+				119459C019440EC000D08C14 /* RecursiveDirectoryIteratorStategies.h */,
+			);
+			path = Poco;
+			sourceTree = "<group>";
+		};
+		119459C119440EC000D08C14 /* src */ = {
+			isa = PBXGroup;
+			children = (
+				119459C219440EC000D08C14 /* DirectoryWatcher.cpp */,
+				119459C319440EC000D08C14 /* RecursiveDirectoryIterator.cpp */,
+				119459C419440EC000D08C14 /* RecursiveDirectoryIteratorStategies.cpp */,
+			);
+			path = src;
+			sourceTree = "<group>";
+		};
+		119459C519440EC000D08C14 /* src */ = {
+			isa = PBXGroup;
+			children = (
+				119459C619440EC000D08C14 /* ofxIO.h */,
 			);
 			path = src;
 			sourceTree = "<group>";
@@ -148,8 +346,7 @@
 		BB4B014C10F69532006C3DED /* addons */ = {
 			isa = PBXGroup;
 			children = (
-				1183BD611930703800D3F98A /* ofxOpenBCI */,
-				D6F08D00183849870056FB29 /* ofxXmlSettings */,
+				1194598D19440EC000D08C14 /* ofxIO */,
 			);
 			name = addons;
 			sourceTree = "<group>";
@@ -182,36 +379,6 @@
 				BBAB23BE13894E4700AA2426 /* GLUT.framework */,
 			);
 			name = "3rd party frameworks";
-			sourceTree = "<group>";
-		};
-		D6F08D00183849870056FB29 /* ofxXmlSettings */ = {
-			isa = PBXGroup;
-			children = (
-				D6F08D01183849870056FB29 /* libs */,
-				D6F08D06183849870056FB29 /* src */,
-			);
-			name = ofxXmlSettings;
-			path = ../../../addons/ofxXmlSettings;
-			sourceTree = "<group>";
-		};
-		D6F08D01183849870056FB29 /* libs */ = {
-			isa = PBXGroup;
-			children = (
-				D6F08D02183849870056FB29 /* tinyxml.cpp */,
-				D6F08D03183849870056FB29 /* tinyxml.h */,
-				D6F08D04183849870056FB29 /* tinyxmlerror.cpp */,
-				D6F08D05183849870056FB29 /* tinyxmlparser.cpp */,
-			);
-			path = libs;
-			sourceTree = "<group>";
-		};
-		D6F08D06183849870056FB29 /* src */ = {
-			isa = PBXGroup;
-			children = (
-				D6F08D07183849870056FB29 /* ofxXmlSettings.cpp */,
-				D6F08D08183849870056FB29 /* ofxXmlSettings.h */,
-			);
-			path = src;
 			sourceTree = "<group>";
 		};
 		E4328144138ABC890047C5CB /* Products */ = {
@@ -350,13 +517,25 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				119459CF19440EC000D08C14 /* FileExtensionFilter.cpp in Sources */,
+				119459D119440EC000D08C14 /* LinkFilter.cpp in Sources */,
+				119459D719440EC000D08C14 /* RecursiveDirectoryIteratorStategies.cpp in Sources */,
+				119459D419440EC000D08C14 /* SearchPath.cpp in Sources */,
+				119459CB19440EC000D08C14 /* DirectoryFilter.cpp in Sources */,
+				119459CC19440EC000D08C14 /* DirectoryUtils.cpp in Sources */,
+				119459CE19440EC000D08C14 /* Encoding.cpp in Sources */,
 				E4B69E200A3A1BDC003C02F2 /* main.cpp in Sources */,
+				119459C919440EC000D08C14 /* Compression.cpp in Sources */,
 				E4B69E210A3A1BDC003C02F2 /* testApp.cpp in Sources */,
-				1183BD651930703800D3F98A /* ofxOpenBCI.cpp in Sources */,
-				D6F08D09183849870056FB29 /* tinyxml.cpp in Sources */,
-				D6F08D0A183849870056FB29 /* tinyxmlerror.cpp in Sources */,
-				D6F08D0B183849870056FB29 /* tinyxmlparser.cpp in Sources */,
-				D6F08D0C183849870056FB29 /* ofxXmlSettings.cpp in Sources */,
+				119459D219440EC000D08C14 /* PathFilterCollection.cpp in Sources */,
+				119459CA19440EC000D08C14 /* DeviceFilter.cpp in Sources */,
+				119459C719440EC000D08C14 /* ByteBuffer.cpp in Sources */,
+				119459CD19440EC000D08C14 /* DirectoryWatcherManager.cpp in Sources */,
+				119459D519440EC000D08C14 /* DirectoryWatcher.cpp in Sources */,
+				119459D619440EC000D08C14 /* RecursiveDirectoryIterator.cpp in Sources */,
+				119459D319440EC000D08C14 /* RegexPathFilter.cpp in Sources */,
+				119459C819440EC000D08C14 /* ByteBufferUtils.cpp in Sources */,
+				119459D019440EC000D08C14 /* HiddenFileFilter.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -522,6 +701,7 @@
 					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_50)",
 					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_51)",
 					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_52)",
+					"/Users/dangoodwin/Code/OpenFrameworks/addons/ofxKinect/libs/libusb-1.0/lib/osx",
 				);
 				PRODUCT_NAME = betamakerDebug;
 				WRAPPER_EXTENSION = app;
@@ -607,6 +787,7 @@
 					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_49)",
 					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_50)",
 					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_51)",
+					"/Users/dangoodwin/Code/OpenFrameworks/addons/ofxKinect/libs/libusb-1.0/lib/osx",
 				);
 				PRODUCT_NAME = betamaker;
 				WRAPPER_EXTENSION = app;

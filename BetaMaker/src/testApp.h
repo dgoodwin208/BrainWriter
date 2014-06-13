@@ -3,11 +3,6 @@
 #include <math.h>
 #include "ofMain.h"
 
-#define OPENBCI_BAUD 115200
-#define PCKT_START 0xA0
-#define PCKT_END 0xC0
-#define MAX_BYTES 1024
-#define NUM_CHANNELS 8
 
 class testApp : public ofBaseApp{
 
@@ -32,12 +27,6 @@ class testApp : public ofBaseApp{
     int min, max;
     int bufferSize;
     
-    unsigned char bytesRead[MAX_BYTES];
-    vector<unsigned char> byteBuffer;
-    float values[NUM_CHANNELS];
-    float dcOffset[NUM_CHANNELS];
-
-    ofSerial	serial;
     
     //Plot line
     vector<ofVec3f> points;
