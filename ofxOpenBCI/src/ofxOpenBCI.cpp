@@ -21,11 +21,13 @@
 //#include <string>
 #include <algorithm>
 #include <time.h>
+#include <sys/time.h>
+
 #import "ofxOpenBCI.h"
 
 #define byte char
 #define IS_MAC 1
-
+#define MAX_LEFTOVER_SERIAL_BYTES 200
 using namespace ofx::IO;
 
 string command_stop = "s";
@@ -34,6 +36,7 @@ string command_startBinary = "b";
 string command_startBinary_4chan = "v";
 string command_activateFilters = "F";
 string command_deactivateFilters = "f";
+string command_start_test_signal = "+";
 string command_deactivated_channel_initializer[] = {"1", "2", "3", "4", "5", "6", "7", "8"};
 string command_activated_channel_initializer[] = {"q", "w", "e", "r", "t", "y", "u", "i"};
 std::vector<string> command_deactivate_channel(command_deactivated_channel_initializer, command_deactivated_channel_initializer + 8);
@@ -104,6 +107,24 @@ int ofxOpenBCI::startStreaming() {
     
 }
 
+void ofxOpenBCI::toggleFilter(bool turnOn)
+{
+    if (turnOn){
+        serialDevice.writeBytes(command_activateFilters + "\n");
+        cout << "Processing: OpenBCI_ADS1299: engaging filter\n";
+    }
+    else
+    {
+        serialDevice.writeBytes(command_deactivateFilters + "\n");
+        cout << "Processing: OpenBCI_ADS1299: deactivating filter\n";
+    }
+        
+}
+void ofxOpenBCI::triggerTestSignal(bool turnOn)
+{
+    serialDevice.writeBytes(command_start_test_signal + "\n");
+    cout << "Generating test signal\n";
+}
 
 int ofxOpenBCI::stopStreaming() {
     serialDevice.writeBytes(command_stop + "\n");
@@ -115,30 +136,46 @@ int ofxOpenBCI::stopStreaming() {
 
 //simple public interface for a reading singe char of data from BCI device and updating
 //the datapacket packet as necessary. (echo writes to console)
+//AT a sample rate of 250Hz we see about ~150 bytes per call of the update function
 void ofxOpenBCI::update(bool echoChar) {
     
-    
-    uint8_t inByte_array[1];
-    
-    //If we're having any issue, this is a likely initial culprit
-    
-    byte inByte;
-    int byteCount = 0;
-    int bytesAvailable = serialDevice.available();
-    uint8_t inByte_arrayBIG[bytesAvailable];
+    struct timeval tv;
+    gettimeofday(&tv, 0);
 
-    //Because we see ~160 bytes in the buffer on every update (which is bound to the main app's update fxn)
-    currBuffer.clear();
-    curBuffIndex=0;
     
-    //serialDevice.readByte(inByte_array[0]);
+    //First, see if there's anything in the leftover buffer and push into the currBuffer
+    curBuffIndex=0;
+    currBuffer.clear();
+    for (int i=0; i<leftoverBytes.size(); ++i) {
+        currBuffer.push_back(leftoverBytes[i]);
+        curBuffIndex++;
+    }
+
+
+    
+    //Then, get all bytes off the serial port
+    int bytesAvailable = serialDevice.available();
+    printf("UPDATE START (%i):\n",bytesAvailable);//, tv.tv_usec
+    uint8_t inByte_arrayBIG[bytesAvailable];
     serialDevice.readBytes(inByte_arrayBIG, bytesAvailable);
 
-//    printf("\n[STARTED] Sees %i Bytes to process \n",bytesAvailable);
+    byte inByte;
     for (int i = 0; i<bytesAvailable; ++i) {
         inByte = inByte_arrayBIG[i];
         
-        //byte(inByte_array[0]);
+        //This is very weird, but sometimes the last element of the input buffer from the serial port
+        //is repeated as the first character in the new input buffer
+        
+        /*
+        if (i==0 && leftoverBytes.size()>0){
+            printf("%02X =? %02X\n",inByte,leftoverBytes.back());
+            if (inByte==leftoverBytes.back()){
+                printf("SKIPPING ERRONEOUS DUPLICATE\n");
+                continue; //Don't duplicate the same byte twice
+            }
+        }
+        */
+        
         if (echoChar) //cout << inByte << " ";
             printf("%02X ",inByte);
         
@@ -147,32 +184,66 @@ void ofxOpenBCI::update(bool echoChar) {
         
         //increment the buffer index for the next time
         curBuffIndex++;
-        
-        
-        //is the data packet complete?
-        switch (dataMode) {
-            case DATAMODE_BIN:
-                if (inByte == BYTE_END){
-                    interpretBinaryMessage(curBuffIndex-1);
-                }
-                break;
-            case DATAMODE_BIN_4CHAN:
-                if (inByte == BYTE_END) interpretBinaryMessage(curBuffIndex-1);
-                break;
-            case DATAMODE_TXT:
-                printf("[WARNING] TEXT MODE NOT YET SUPPORTED");
-                if (inByte == CHAR_END) interpretTextMessage();
-                break;
-            default:
-                //don't accumulate...just reset back to the first place in the buffer
-                curBuffIndex=0;
-                break;
-        }
     }//Finish the for loop around the input bytes
 
-//    printf("\n[DONE]\n");
-    //printf("Size of currBuffer: %i bytes \n", currBuffer.size());
+    //If there was no data on the wire, then we're done
+    if (curBuffIndex==0){
+        printf("No data on wire\n");
+        return;
+    }
+    curBuffIndex--; //Decrement to the last entered byte
+
+
+    //Roll back the pointer to the last end byte seen. Store any extra bytes between the end of the buffer
+    //and the last endIdx in the leftoverBytes array.
+    int lastPacketEndIdx = curBuffIndex;
+    while (currBuffer[lastPacketEndIdx]!=BYTE_END){
+        lastPacketEndIdx--;
+        
+        //And if there's no complete packets in this data
+        if (lastPacketEndIdx<0){
+            cout << "No complete packets found \n";
+            break;
+        }
+    }
+//    printf("So lastPacketEndIdx points to a byte: %2X\n",currBuffer[lastPacketEndIdx]);
     
+    //Push the extra data into the leftOVerArray
+    leftoverBytes.clear();
+    for (int i=lastPacketEndIdx+1; i<currBuffer.size(); ++i) {
+        leftoverBytes.push_back(currBuffer[i]);
+    }
+//    printf("Left %i bytes in the leftover vector\n", leftoverBytes.size());
+
+    //To avoid any compounding buffer issues, we set a max count in the lefover
+    //If it's too big we simply clear it
+    if (leftoverBytes.size()>MAX_LEFTOVER_SERIAL_BYTES) {
+        leftoverBytes.clear();
+    }
+    
+    //Process all the packets we know we have
+    //Go forward in the input array, from 0 the last end byte (that we found above)
+    int nextIndexToTry = 0;
+    int tempResult = 0;
+    while (nextIndexToTry<lastPacketEndIdx) {
+
+        if(currBuffer[nextIndexToTry]==BYTE_START){
+            //If the message is succesfully created, nextIndexToTry is updated to be
+            tempResult = interpretBinaryMessageForward(nextIndexToTry);
+            if (tempResult==-1){ //No end byte was seen for that packet and packet's length byte
+                nextIndexToTry++;
+            }
+            else {   //We have just processed a packet successfully
+                nextIndexToTry=tempResult;
+            }
+        }
+        else {// if(currBuffer[nextIndexToTry]==BYTE_END){
+            nextIndexToTry++;
+        }
+        
+    }
+    
+    printf("UPDATE END\n");
     return;
 }
 
@@ -220,14 +291,14 @@ void ofxOpenBCI::changeChannelState(int Ichan,bool activate) {
  0: Start_char 0xA0
  1: Length of payload
  2-5: Sample number
- 6-9: Chan0
- 10-13: Chan1
- 14: Chan2
- 18: Chan3
- 22: Chan4
- 26: Chan5
- 30: Chan6
- 34-37: Chan7
+ 6-9: Chan0 (32 bit signed int)
+ 10-13: Chan1 (32 bit signed int
+ 14: Chan2 (32 bit signed int
+ 18: Chan3 (32 bit signed int
+ 22: Chan4 (32 bit signed int
+ 26: Chan5 (32 bit signed int
+ 30: Chan6 (32 bit signed int
+ 34-37: Chan7 (32 bit signed int
  38: End_char 0xC0
  */
 
@@ -242,25 +313,36 @@ int ofxOpenBCI::interpretBinaryMessage(int endInd) {
         startInd--;
     }
     
+    //cout << startInd << ", ";
+    
     if (startInd < 0) {
-        // printf("Dropped this packed because it didn't have a start byte\n");
+        printf("Dropped this packet because it didn't have a start byte\n");
     }
     else if ((endInd - startInd + 1) < 3) {
         // printf("data packet isn't long enough to hold any data...so ignore this data packet\n");
     }
     else {
-        int n_bytes = int(currBuffer[startInd + 1]); //this is the number of bytes in the payload
-        //printf("Expected %i bytes in this buffer\n", n_bytes);
+        
+        //Get the number of bytes in the payload. Defined as:
+        //Payload Length in Bytes = (1+Nchan)*4= 8*4+4 = 36 bytes
+        unsigned char n_bytes = currBuffer[startInd + 1]; //this is the number of bytes in the payload
+        
+        printf("Expected %i bytes in this packet\n", n_bytes);
         
         // check to see if the payload is at least the minimum length
         if (n_bytes < 4*MIN_PAYLOAD_LEN_INT32) {
             //bad data.  ignore this packet;
-            //printf("\tAhh it's a runt we have here\n");
+            printf("\tAhh it's a runt we have here\n");
         }
         else {
+            for (int i = startInd;i<=endInd ; ++i) {
+                printf("%02X, ",currBuffer[i]);
+            }
+            printf("\n");
             //check to see if the payload length matches the measured packet size
+            
             if ((startInd + 1 + n_bytes + 1) != endInd) {
-                //printf("\tBad packet: %i, %i \n", startInd, endInd);
+                printf("Bad packet: %i, %i. Got: %i \n", startInd, endInd, startInd + 1 + n_bytes + 1);
             }
             else {
                 
@@ -268,9 +350,11 @@ int ofxOpenBCI::interpretBinaryMessage(int endInd) {
                 int nInt32 = n_bytes / 4;
                 
                 dataPacket_ADS1299 dataPacket = dataPacket_ADS1299(n_bytes);
+                dataPacket.timestamp = time(NULL);
                 //printf("Bytes 1 and 2: %2X, %2X",currBuffer[startInd], currBuffer[startInd+1]);
                 
                 dataPacket.sampleIndex = interpretAsInt32(&currBuffer[startInd+2]); //read the int32 value
+               
                 //Full doc here: http://www.openbci.com/forums/topic/understanding-serial-interface/
                 startInd += 6;  //increment the start index
                 
@@ -282,11 +366,62 @@ int ofxOpenBCI::interpretBinaryMessage(int endInd) {
                 outputPacketBuffer.push_back(dataPacket);
                 //cout << "[Added another Packet!]\n";
             }
+            
+            
         }
     }
  
-    return 0;
+    printf("\n");
+    return startInd;
 }
+
+//Rewrote the interpretBinaryMessage fxn to avoid stumbling over a BYTE_END or BYTE_START on accident
+int ofxOpenBCI::interpretBinaryMessageForward(int startIdx) {
+    
+    //assume curBuffIndex has already been incremented to the next starting spot
+    int endIdx = startIdx;
+    
+    unsigned char n_bytes = currBuffer[startIdx + 1]; //this is the number of bytes in the payload
+    
+    //Counting forward, do we see the BYTE_END?
+    if (currBuffer[(startIdx + 1 + n_bytes + 1)] != BYTE_END) {
+        printf("Bad packet: %i, %i. Got: %i \n", startIdx, endIdx, startIdx + 1 + n_bytes + 1);
+        endIdx = -1;
+    }
+    else{
+        
+        endIdx = (startIdx + 1 + n_bytes + 1);
+        
+
+        //Prints out the entire message to confirm it's working well
+//        for (int i = startIdx;i<=endIdx ; ++i)
+//            printf("%02X, ",currBuffer[i]);
+//        printf("\n");
+
+        
+        int nInt32 = n_bytes / 4;
+        
+        dataPacket_ADS1299 dataPacket = dataPacket_ADS1299(nInt32);
+        dataPacket.timestamp = time(NULL);
+        
+        dataPacket.sampleIndex = interpretAsInt32(&currBuffer[startIdx+2]); //read the int32 value
+        
+        //Full doc here: http://www.openbci.com/forums/topic/understanding-serial-interface/
+        startIdx += 6;  //increment the start index
+        
+        int nValToRead = min<int>(nInt32-1,dataPacket.values.size());
+        for (int i=0; i < nValToRead;i++) {
+            dataPacket.values[i] = interpretAsInt32(&currBuffer[startIdx]); //read the int32 value
+            startIdx += 4;  //increment the start index
+        }
+        outputPacketBuffer.push_back(dataPacket);
+    }
+    
+    
+    //printf("\n");
+    return endIdx;
+}
+
 
 int ofxOpenBCI::interpretAsInt32(byte byteArray[]) {
     //big endian

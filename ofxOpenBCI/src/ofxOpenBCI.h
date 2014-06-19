@@ -32,10 +32,19 @@ const int MIN_PAYLOAD_LEN_INT32 = 1; //8 is the normal number, but there are sho
 
 
 struct dataPacket_ADS1299 {
-    int sampleIndex;
-    public: std::vector<int> values;
-    dataPacket_ADS1299(int nValues) : values(nValues, 0){}
 
+    public:
+        std::vector<int> values;
+        int sampleIndex;
+        //Timestamp is the universal time (as opposed to relative to an initial timestamp)
+        time_t timestamp;
+    dataPacket_ADS1299(int nValues) : values(nValues, 0){}
+    
+//    dataPacket_ADS1299(int nValues){
+//        for (int i=0; i < nValues; i++) {
+//            values.push_back(0);
+//        }
+//    }
     int printToConsole() {
         cout <<"printToConsole: dataPacket = ";
         cout << sampleIndex;
@@ -74,7 +83,8 @@ public:
 
     ofxOpenBCI();
     void update(bool echoChar);
-    
+    void toggleFilter(bool turnOn);
+    void triggerTestSignal(bool turnOn);
     void changeChannelState(int Ichan,bool activate);
     
     vector<dataPacket_ADS1299> getData();
@@ -92,11 +102,14 @@ public:
 
     bool isNewDataPacketAvailable();
     private: int interpretBinaryMessage();
+    int interpretBinaryMessageForward (int endInd);
+    
     int interpretBinaryMessage(int endInd);
     private: int interpretTextMessage();
     
     private: int curBuffIndex;
     private: int interpretAsInt32(byte byteArray[]);
+    vector<byte>leftoverBytes;
 
     private: vector<byte> currBuffer;
     private: vector<dataPacket_ADS1299> outputPacketBuffer;

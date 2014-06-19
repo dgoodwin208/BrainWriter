@@ -37,7 +37,12 @@
 
 #define MINIMUM_SETTLE_TIME 3
 
+#define HOST "localhost"
+#define PORT 12345
 
+#define DEBUG_MODE 0
+
+#define BUFFER_WEB_LENGTH 10000
 //------------------------------------------------------------------------------
 void ofApp::setup()
 {
@@ -53,7 +58,7 @@ void ofApp::setup()
 	plot1->setLineWidth(3);
     plot1->setAutoRangeShrinksBack(true);
 
-    plot2 = new ofxHistoryPlot( NULL, "Chan0", 400, false); //NULL cos we don't want it to auto-update. confirmed by "true"
+    plot2 = new ofxHistoryPlot( NULL, "Chan1", 400, false); //NULL cos we don't want it to auto-update. confirmed by "true"
 	plot2->setRange(0, ofGetHeight());
 	plot2->setColor( ofColor(200,10,200) );
 	plot2->setShowNumericalInfo(true);
@@ -65,12 +70,11 @@ void ofApp::setup()
     plot1->setDrawGrid(false);
     plot2->setDrawGrid(false);
     
-    ofxbci.startStreaming();
     
-    time_t seconds = time(NULL);
+    sessionStartTime = time(NULL);
     ostringstream filename;
     
-    filename << "/Users/dangoodwin/Desktop/l" << seconds << ".csv";
+    filename << "/Users/dangoodwin/Desktop/l" << sessionStartTime << ".csv";
     cout << "Filename: " << filename.str().c_str();
     logFile.open(filename.str().c_str());
     logFile << "timestamp,prompt,chan0,chan1,chan2,chan3,chan4,chan5,chan6,chan7,\n";
@@ -81,7 +85,9 @@ void ofApp::setup()
     appState = APP_STATE_PAUSING;
     lastStateChangeTime = time(NULL);
     setNewProblem();
+    
     secondsForNextPeriod = 10; //Set a long wait time initially for any settling to occur
+    uploadTimePeriod = 20; //Every 20 seconds we upload the data to the server
     
     verdana30.loadFont("verdana.ttf", 30, true, true);
 	verdana30.setLineHeight(34.0f);
@@ -89,50 +95,121 @@ void ofApp::setup()
     
     lastRecivedData = 0;
     
+    for (int i=0; i<BUFFER_WEB_LENGTH; ++i) {
+        webBuffer.push_back("");
+    }
     
+    //------------- SET UP TIME SERIES DATA STREAM ------------------//
+    if (DEBUG_MODE) {
+        int bufferSize = 1024;
+        left.assign(bufferSize, 0.0);
+        right.assign(bufferSize, 0.0);
+        soundStream.listDevices();
+        soundStream.setDeviceID(1); //Set the built-in Mac Mic
+        soundStream.setup(this, 0, 2, 44100, bufferSize, 4);
+    }
+    else{
+        ofxbci.startStreaming();
+
+    }
+
+    //------------ SET UP DATA TRANSFER TO WEB DATABASE --------------//
     ofAddListener(httpUtils.newResponseEvent,this,&ofApp::newResponse);
 	httpUtils.start();
+   
     
-    ofxHttpForm form;
-	form.action = "http://localhost:5000/data";
-	form.method = OFX_HTTP_POST;
-	form.addFormField("data", ofToString("delivered"));
     
-	httpUtils.addForm(form);
+    // open an outgoing connection to HOST:PORT
+	//sender.setup(HOST, PORT);
 
-	
-    //requestStr = "message sent: " + ofToString(counter);
-	
-    
-    
-    
-    
+    //Monitor whether a HTTP call is in the works
+    uploadingToWeb = false;
+    startIdx = 0;
 }
 
+
+void ofApp::reportOSCEvent(){
+/*
+    ofxOscMessage m;
+    m.setAddress("/test");
+    m.addIntArg(1);
+    m.addFloatArg(3.5f);
+    m.addStringArg("hello");
+    m.addFloatArg(ofGetElapsedTimef());
+    sender.sendMessage(m);
+ */
+}
 //------------------------------------------------------------------------------
 void ofApp::update()
 {
     
-    //Get any and all bytes off the serial port
-    ofxbci.update(false); //Param is to echo to the command line
-    if(ofxbci.isNewDataPacketAvailable())
-    {
-        vector<dataPacket_ADS1299> newData = ofxbci.getData();
-        
-        printf("Sees %i new packets\n", newData.size());
-
-        for (int i=0; i<newData.size(); ++i) {
-            plot1->update(newData[i].values[0]);
-            logFile << newData[i].values[0] << ",";
+    if(DEBUG_MODE){
+        int audio_data_size = left.size();
+        for (int i=0; i<audio_data_size; ++i) {
+            ostringstream row;
             
-            plot2->update(newData[i].values[1]);
-            logFile << newData[i].values[1] << ",";
+            //Update the plots with the latest data from the OpenBCI units
+            plot1->update(left[i]);
+            plot2->update(right[i]);
             
-            logFile << appState << ",";
-            logFile << "\n";
+            //Create the row, which is then pushed both to the logfile and to the server
+            row << time(NULL) << ",";
+            row << left[i] << ",";
+            row << right[i] << ",";
+            row << appState << ",";
+            row << "\n";
+            
+            logFile << row; //soon to be removed
+            
+            //webBuffer.push_back(row.str());
+            webBuffer[(startIdx+bufferCtr)%BUFFER_WEB_LENGTH] = row.str();
+            bufferCtr+=1;
         }
     }
+    
+    else{
+        //Get any and all bytes off the serial port
+        ofxbci.update(false); //Param is to echo to the command line
+        if(ofxbci.isNewDataPacketAvailable())
+        {
+            vector<dataPacket_ADS1299> newData = ofxbci.getData();
+            
+            int num_packets = newData.size();
 
+            for (int i=0; i<newData.size(); ++i) {
+                ostringstream row;
+                
+                //Update the plots with the latest data from the OpenBCI units
+                //newData.printToConsole();
+                plot1->update(newData[i].values[0]);
+                plot2->update(newData[i].values[1]);
+                
+                //Create the row, which is then pushed both to the logfile and to the server
+                row << newData[i].timestamp - sessionStartTime << ",";
+                row << newData[i].values[0] << ",";
+                row << newData[i].values[1] << ",";
+                row << appState << ",";
+                row << "\n";
+
+                logFile << row.str(); //soon to be removed
+                
+                webBuffer.push_back(row.str());
+            }
+        }
+    
+    }
+    
+    
+    
+    if (time(NULL) - lastUploadTime> uploadTimePeriod && !uploadingToWeb)
+    {
+        printf("Trying to upload to the web\n");
+        UploadDataToTheWeb();
+    }
+    
+    
+    
+    
     //------------Figure out which state the drawing app is in------------------//
     time_t timeElapsedSeconds = time(NULL) - lastStateChangeTime;
     if (appState == APP_STATE_PAUSING)
@@ -187,7 +264,6 @@ void ofApp::draw()
 {
 	plot1->draw(10, 10, 1024, 240);
     plot2->draw(10, 300, 1024, 240);
-    //ofBackground(0);
 
     if (appState == APP_STATE_ANSWERING){
         string problem_string;
@@ -225,6 +301,23 @@ void ofApp::keyPressed(int key)
         logFile.close();
     }
     
+    else if (key =='f')
+    {
+        ofxbci.toggleFilter(true);
+    }
+    else if (key == ' ')
+    {
+        printf("Disabling all other channels but 0 and 1\n");
+
+        for (int i = 2; i<8; ++i) {
+            ofxbci.changeChannelState(i, false);
+        }
+    }
+    else if (key == 't')
+    {
+        ofxbci.triggerTestSignal(true); //haven't implemented the way to turn it off yet ;)
+    }
+    
     //---------This is part of the arithmetic app---------//
     else if (key == OF_KEY_RETURN)
     {
@@ -239,7 +332,65 @@ void ofApp::keyPressed(int key)
 }
 
 //--------------------------------------------------------------
-void ofApp::newResponse(ofxHttpResponse & response){
-    cout << ofToString(response.status) + ": " + (string)response.responseBody;
+void ofApp::UploadDataToTheWeb(){
+    
+    ofxHttpForm form;
+	form.action = "http://localhost:5000/data";
+	form.method = OFX_HTTP_POST;
+	
+    ostringstream output;
+    lastUploadedIdx = webBuffer.size()-1;
+
+
+    
+    for (int i=0; i<=bufferCtr; ++i) {
+        output << webBuffer[(startIdx+i)%BUFFER_WEB_LENGTH];
+    }
+    startIdx = (startIdx + bufferCtr+1)%BUFFER_WEB_LENGTH;
+    
+    
+    form.addFormField("data", output.str() );
+    form.addFormField("sessionStartTime", ofToString(sessionStartTime) );
+    
+    uploadingToWeb = true;
+	httpUtils.addForm(form);
+    
+    
 }
 
+
+void ofApp::newResponse(ofxHttpResponse & response){
+    cout << ofToString(response.status) + ": " + (string)response.responseBody;
+    lastUploadTime = time(NULL);
+    
+    //Now that we know it uploaded correctly, remove the data from the webBuffer
+    /*
+    for (int i=0; i<lastUploadedIdx; ++i) {
+        webBuffer.erase(webBuffer.begin());
+    }
+     */
+    
+    uploadingToWeb = false;
+}
+
+//---------------Debug tool--------------------------------------
+void ofApp::audioIn(float * input, int bufferSize, int nChannels){
+	
+	float curVol = 0.0;
+	
+	// samples are "interleaved"
+	int numCounted = 0;
+    
+	//lets go through each sample and calculate the root mean square which is a rough way to calculate volume
+	for (int i = 0; i < bufferSize; i++){
+		left[i]		= input[i*2]*0.5;
+		right[i]	= input[i*2+1]*0.5;
+        
+		curVol += left[i] * left[i];
+		curVol += right[i] * right[i];
+		numCounted+=2;
+	}
+	
+
+	
+}

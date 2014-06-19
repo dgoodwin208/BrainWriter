@@ -30,6 +30,7 @@
 #include "ofxOpenBCI.h"
 #include "ofxHistoryPlot.h"
 #include "ofxHttpUtils.h"
+//#include "ofxOsc.h"
 
 using namespace ofx::IO;
 
@@ -43,13 +44,22 @@ public:
 
     void keyPressed(int key);
 
-//    std::vector<SerialDevice> devices;
+
     ofxOpenBCI ofxbci;
+
+    //-------Debug: using audio input --------//
+    ofSoundStream soundStream;
+    void audioIn(float * input, int bufferSize, int nChannels);
+    vector <float> left;
+    vector <float> right;
+    
     ofxHistoryPlot * plot1; //manual
     ofxHistoryPlot * plot2;
     ofstream logFile;
     
+    time_t sessionStartTime;
     //-----Mental Math app-----//
+    
     void setNewProblem();
     
     int appState;
@@ -64,7 +74,20 @@ public:
     string answer;
     //-------------------------//
     
-    //-----Posting to Parse.com//
+    //-------- For posting to the web ---------//
     void newResponse(ofxHttpResponse & response);
     ofxHttpUtils httpUtils;
+    vector<string> webBuffer;
+    int startIdx; int bufferCtr;//Create a circular buffer
+    int uploadTimePeriod;
+    time_t lastUploadTime;
+    int lastUploadedIdx;
+    void UploadDataToTheWeb();
+    
+    
+    //-------- For posting to the OSC -------//
+    //ofxOscSender sender;
+    void reportOSCEvent();
+    
+    bool uploadingToWeb;
 };
