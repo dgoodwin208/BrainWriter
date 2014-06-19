@@ -185,7 +185,7 @@ void ofApp::update()
                 plot2->update(newData[i].values[1]);
                 
                 //Create the row, which is then pushed both to the logfile and to the server
-                row << newData[i].timestamp - sessionStartTime << ",";
+                row << newData[i].sampleIndex << ",";
                 row << newData[i].values[0] << ",";
                 row << newData[i].values[1] << ",";
                 row << appState << ",";
