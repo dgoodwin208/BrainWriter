@@ -61,7 +61,7 @@ ofxOpenBCI::ofxOpenBCI()
     #endif
     
     std::vector<SerialDeviceInfo> devicesInfo = SerialDeviceUtils::getDevices(deviceQueryString);
-//    cout << "Sees " << devicesInfo.size() << " USB devices\n";
+
     for(std::size_t i = 0; i < devicesInfo.size(); ++i)
     {
         cout << "Trying to connect to: " << devicesInfo[i] <<"\n";
@@ -155,26 +155,13 @@ void ofxOpenBCI::update(bool echoChar) {
     
     //Then, get all bytes off the serial port
     int bytesAvailable = serialDevice.available();
-    printf("UPDATE START (%i):\n",bytesAvailable);//, tv.tv_usec
+    //printf("UPDATE START (%i):\n",bytesAvailable);//, tv.tv_usec
     uint8_t inByte_arrayBIG[bytesAvailable];
     serialDevice.readBytes(inByte_arrayBIG, bytesAvailable);
 
     byte inByte;
     for (int i = 0; i<bytesAvailable; ++i) {
         inByte = inByte_arrayBIG[i];
-        
-        //This is very weird, but sometimes the last element of the input buffer from the serial port
-        //is repeated as the first character in the new input buffer
-        
-        /*
-        if (i==0 && leftoverBytes.size()>0){
-            printf("%02X =? %02X\n",inByte,leftoverBytes.back());
-            if (inByte==leftoverBytes.back()){
-                printf("SKIPPING ERRONEOUS DUPLICATE\n");
-                continue; //Don't duplicate the same byte twice
-            }
-        }
-        */
         
         if (echoChar) //cout << inByte << " ";
             printf("%02X ",inByte);
@@ -192,7 +179,6 @@ void ofxOpenBCI::update(bool echoChar) {
         return;
     }
     curBuffIndex--; //Decrement to the last entered byte
-
 
     //Roll back the pointer to the last end byte seen. Store any extra bytes between the end of the buffer
     //and the last endIdx in the leftoverBytes array.
@@ -243,21 +229,23 @@ void ofxOpenBCI::update(bool echoChar) {
         
     }
     
-    printf("UPDATE END\n");
+    //printf("UPDATE END\n");
     return;
 }
 
+//Takes the latest data out of the output queue and returns it as a vector
 vector<dataPacket_ADS1299> ofxOpenBCI::getData()
 {
     //To be returned in the function
     vector<dataPacket_ADS1299> output;
     
-    for (int i = 0; i<outputPacketBuffer.size(); ++i) {
-        output.push_back(outputPacketBuffer[i]);
+    int currentSize =outputPacketBuffer.size();
+    //printf("Sees %i objects in the outputPacketBuffer", currentSize);
+    for (int i = 0; i<currentSize; ++i) {
+        output.push_back(outputPacketBuffer.front());
+        outputPacketBuffer.pop();
     }
     
-    //Clear the internal buffer of completed packets
-    outputPacketBuffer.clear();
     return output;
 }
 
@@ -363,7 +351,7 @@ int ofxOpenBCI::interpretBinaryMessage(int endInd) {
                     dataPacket.values[i] = interpretAsInt32(&currBuffer[startInd]); //read the int32 value
                     startInd += 4;  //increment the start index
                 }
-                outputPacketBuffer.push_back(dataPacket);
+                outputPacketBuffer.push(dataPacket);
                 //cout << "[Added another Packet!]\n";
             }
             
@@ -414,7 +402,7 @@ int ofxOpenBCI::interpretBinaryMessageForward(int startIdx) {
             dataPacket.values[i] = interpretAsInt32(&currBuffer[startIdx]); //read the int32 value
             startIdx += 4;  //increment the start index
         }
-        outputPacketBuffer.push_back(dataPacket);
+        outputPacketBuffer.push(dataPacket);
     }
     
     

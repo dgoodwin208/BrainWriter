@@ -112,7 +112,7 @@ public:
     vector<byte>leftoverBytes;
 
     private: vector<byte> currBuffer;
-    private: vector<dataPacket_ADS1299> outputPacketBuffer;
+    private: queue<dataPacket_ADS1299> outputPacketBuffer;
     
 
 };

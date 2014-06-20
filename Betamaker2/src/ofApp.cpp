@@ -94,7 +94,7 @@ void ofApp::setup()
 	verdana30.setLetterSpacing(1.035);
     
     lastRecivedData = 0;
-    
+
     for (int i=0; i<BUFFER_WEB_LENGTH; ++i) {
         webBuffer.push_back("");
     }
