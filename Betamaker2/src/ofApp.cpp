@@ -40,7 +40,7 @@
 #define HOST "localhost"
 #define PORT 12345
 
-#define DEBUG_MODE 0
+#define DEBUG_MODE 1
 
 #define BUFFER_WEB_LENGTH 10000
 //------------------------------------------------------------------------------
@@ -109,35 +109,53 @@ void ofApp::setup()
         soundStream.setup(this, 0, 2, 44100, bufferSize, 4);
     }
     else{
+        //ofxbci2.startStreaming();
         ofxbci.startStreaming();
-
     }
 
     //------------ SET UP DATA TRANSFER TO WEB DATABASE --------------//
     ofAddListener(httpUtils.newResponseEvent,this,&ofApp::newResponse);
 	httpUtils.start();
    
-    
-    
     // open an outgoing connection to HOST:PORT
-	//sender.setup(HOST, PORT);
+	sender.setup(HOST, PORT);
 
     //Monitor whether a HTTP call is in the works
     uploadingToWeb = false;
-    startIdx = 0;
+    //webBufferstartIdx = 0;
+    
+
+    int bufferSize = 256;
+    fft = ofxFft::create(bufferSize, OF_FFT_WINDOW_HAMMING, OF_FFT_FFTW);
+    fftoutput.resize(fft->getBinSize());
 }
 
 
 void ofApp::reportOSCEvent(){
-/*
+
+
+//    fft->setSignal(timeslice);
+//	
+//	float* curFft = fft->getAmplitude();
+//	memcpy(&fftoutput[0], curFft, sizeof(float) * fft->getBinSize());
+//	
+//	maxValue = 0;
+//	for(int i = 0; i < fft->getBinSize(); i++) {
+//		if(abs(audioBins[i]) > maxValue) {
+//			maxValue = abs(audioBins[i]);
+//		}
+//	}
+//	for(int i = 0; i < fft->getBinSize(); i++) {
+//		audioBins[i] /= maxValue;
+//	}
+    
     ofxOscMessage m;
-    m.setAddress("/test");
-    m.addIntArg(1);
-    m.addFloatArg(3.5f);
-    m.addStringArg("hello");
-    m.addFloatArg(ofGetElapsedTimef());
+    m.setAddress("/player1eeg");
+    m.addFloatArg(42.0f);
+    m.addFloatArg(ofRandomf());
+//    m.addFloatArg(ofGetElapsedTimef());
     sender.sendMessage(m);
- */
+
 }
 //------------------------------------------------------------------------------
 void ofApp::update()
@@ -161,51 +179,91 @@ void ofApp::update()
             
             logFile << row; //soon to be removed
             
-            //webBuffer.push_back(row.str());
-            webBuffer[(startIdx+bufferCtr)%BUFFER_WEB_LENGTH] = row.str();
-            bufferCtr+=1;
+            webBuffer.push_back(row.str());
+            //webBuffer[(webBufferstartIdx+bufferCtr)%BUFFER_WEB_LENGTH] = row.str();
+            //bufferCtr+=1;
+            
+            timeslice.push_back(left[i]);
+            
+            if (timeslice.size()>1 && timeslice.size()%256==0)
+            {
+                cout << "Doooone!\n";
+                reportOSCEvent();
+                timeslice.clear();
+            }
+            
+
         }
     }
     
     else{
         //Get any and all bytes off the serial port
         ofxbci.update(false); //Param is to echo to the command line
-        if(ofxbci.isNewDataPacketAvailable())
+        //ofxbci2.update(false);
+        if(ofxbci.isNewDataPacketAvailable())// || ofxbci2.isNewDataPacketAvailable())
         {
             vector<dataPacket_ADS1299> newData = ofxbci.getData();
             
             int num_packets = newData.size();
-
+            //printf("Seeing %i packets on the first interface\n", num_packets);
+            
             for (int i=0; i<newData.size(); ++i) {
                 ostringstream row;
                 
                 //Update the plots with the latest data from the OpenBCI units
                 //newData.printToConsole();
                 plot1->update(newData[i].values[0]);
-                plot2->update(newData[i].values[1]);
+                //plot2->update(newData[i].values[6] - newData[i].values[5]);
                 
                 //Create the row, which is then pushed both to the logfile and to the server
                 row << newData[i].sampleIndex << ",";
                 row << newData[i].values[0] << ",";
                 row << newData[i].values[1] << ",";
+                //row << newData[i].values[6] - newData[i].values[5] << ",";
                 row << appState << ",";
                 row << "\n";
 
                 logFile << row.str(); //soon to be removed
                 
                 webBuffer.push_back(row.str());
+                
+                timeslice.push_back(newData[i].values[0]*.02232);
+                
+                if (timeslice.size()>1 && timeslice.size()%256==0)
+                {
+                    cout << "Doooone!\n";
+                    reportOSCEvent();
+                    timeslice.clear();
+                }
+                    
             }
+            
+//            //The second channel (duplicating code above)
+//            vector<dataPacket_ADS1299> newData2 = ofxbci2.getData();
+//            
+//            num_packets = newData2.size();
+//            printf("Seeing %i packets on the second interface\n", num_packets);
+//            for (int i=0; i<num_packets; ++i) {
+//                
+//                //Update the plots with the latest data from the OpenBCI units
+//                //newData.printToConsole();
+//                //plot1->update(newData[i].values[0]);
+//                plot2->update(newData2[i].values[0]);
+//                
+//                }
+
+            
         }
     
     }
     
     
     
-    if (time(NULL) - lastUploadTime> uploadTimePeriod && !uploadingToWeb)
-    {
-        printf("Trying to upload to the web\n");
-        UploadDataToTheWeb();
-    }
+//    if (time(NULL) - lastUploadTime> uploadTimePeriod && !uploadingToWeb)
+//    {
+//        printf("Trying to upload to the web\n");
+//        UploadDataToTheWeb();
+//    }
     
     
     
@@ -294,6 +352,7 @@ void ofApp::keyPressed(int key)
 
     if (key=='b'){
         ofxbci.startStreaming();
+        //ofxbci2.startStreaming();
     }
     
     else if (key == 's')
@@ -316,6 +375,7 @@ void ofApp::keyPressed(int key)
     else if (key == 't')
     {
         ofxbci.triggerTestSignal(true); //haven't implemented the way to turn it off yet ;)
+        //ofxbci2.triggerTestSignal(true); //haven't implemented the way to turn it off yet ;)
     }
     
     //---------This is part of the arithmetic app---------//
@@ -339,19 +399,28 @@ void ofApp::UploadDataToTheWeb(){
 	form.method = OFX_HTTP_POST;
 	
     ostringstream output;
+
     lastUploadedIdx = webBuffer.size()-1;
 
-
+    //Choose the index that is most likely going to give us 500 time samples
+    int mid_index = min(lastUploadedIdx/2,lastUploadedIdx-500);
+    //If we still don't have a valid index, get out
+    if (lastUploadedIdx<0)
+        printf("ERROR: trying to upload to the web without 2 seconds of data");
+        webBuffer.clear();
+        return;
     
-    for (int i=0; i<=bufferCtr; ++i) {
-        output << webBuffer[(startIdx+i)%BUFFER_WEB_LENGTH];
+    //Otherwise, make a csv file that can be uploaded to the web
+    for (int i=mid_index; i<mid_index+500; ++i) {
+        output << webBuffer[i%BUFFER_WEB_LENGTH];
     }
-    startIdx = (startIdx + bufferCtr+1)%BUFFER_WEB_LENGTH;
     
+    //Reset the 
+    //startIdx = (webBufferstartIdx + bufferCtr+1)%BUFFER_WEB_LENGTH;
     
     form.addFormField("data", output.str() );
-    form.addFormField("sessionStartTime", ofToString(sessionStartTime) );
-    
+    form.addFormField("name", ofToString(sessionStartTime) );
+    form.addFormField("score","90210");
     uploadingToWeb = true;
 	httpUtils.addForm(form);
     

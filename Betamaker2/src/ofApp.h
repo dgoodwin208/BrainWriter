@@ -30,7 +30,8 @@
 #include "ofxOpenBCI.h"
 #include "ofxHistoryPlot.h"
 #include "ofxHttpUtils.h"
-//#include "ofxOsc.h"
+#include "ofxOsc.h"
+#include "ofxFft.h"
 
 using namespace ofx::IO;
 
@@ -46,6 +47,8 @@ public:
 
 
     ofxOpenBCI ofxbci;
+    //ofxOpenBCI ofxbci2;
+
 
     //-------Debug: using audio input --------//
     ofSoundStream soundStream;
@@ -78,7 +81,7 @@ public:
     void newResponse(ofxHttpResponse & response);
     ofxHttpUtils httpUtils;
     vector<string> webBuffer;
-    int startIdx; int bufferCtr;//Create a circular buffer
+    //int webBufferstartIdx; int bufferCtr;//Create a circular buffer
     int uploadTimePeriod;
     time_t lastUploadTime;
     int lastUploadedIdx;
@@ -86,8 +89,11 @@ public:
     
     
     //-------- For posting to the OSC -------//
-    //ofxOscSender sender;
+    ofxOscSender sender;
     void reportOSCEvent();
-    
     bool uploadingToWeb;
+    
+    ofxFft* fft;
+    vector <float> timeslice;
+    vector<float> fftoutput;
 };
