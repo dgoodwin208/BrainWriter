@@ -50,7 +50,7 @@ void ofApp::setup()
     cout << "In ofApp::setup()\n";
 
     //The numerical parameter is the length of the history
-    plot1 = new ofxHistoryPlot( NULL, "Chan0", 400, false); //NULL cos we don't want it to auto-update. confirmed by "true"
+    plot1 = new ofxHistoryPlot( NULL, "Chan0", 256, false); //NULL cos we don't want it to auto-update. confirmed by "true"
 	plot1->setRange(0, ofGetHeight());
 	plot1->setColor( ofColor(200,10,200) );
 	plot1->setShowNumericalInfo(true);
@@ -58,7 +58,7 @@ void ofApp::setup()
 	plot1->setLineWidth(3);
     plot1->setAutoRangeShrinksBack(true);
 
-    plot2 = new ofxHistoryPlot( NULL, "Chan1", 400, false); //NULL cos we don't want it to auto-update. confirmed by "true"
+    plot2 = new ofxHistoryPlot( NULL, "Chan1", 256, false); //NULL cos we don't want it to auto-update. confirmed by "true"
 	plot2->setRange(0, ofGetHeight());
 	plot2->setColor( ofColor(200,10,200) );
 	plot2->setShowNumericalInfo(true);
@@ -134,21 +134,7 @@ void ofApp::setup()
 void ofApp::reportOSCEvent(){
 
 
-//    fft->setSignal(timeslice);
-//	
-//	float* curFft = fft->getAmplitude();
-//	memcpy(&fftoutput[0], curFft, sizeof(float) * fft->getBinSize());
-//	
-//	maxValue = 0;
-//	for(int i = 0; i < fft->getBinSize(); i++) {
-//		if(abs(audioBins[i]) > maxValue) {
-//			maxValue = abs(audioBins[i]);
-//		}
-//	}
-//	for(int i = 0; i < fft->getBinSize(); i++) {
-//		audioBins[i] /= maxValue;
-//	}
-    
+
     ofxOscMessage m;
     m.setAddress("/player1eeg");
     m.addFloatArg(42.0f);
@@ -171,13 +157,13 @@ void ofApp::update()
             plot2->update(right[i]);
             
             //Create the row, which is then pushed both to the logfile and to the server
-            row << time(NULL) << ",";
-            row << left[i] << ",";
-            row << right[i] << ",";
-            row << appState << ",";
-            row << "\n";
+//            row << time(NULL) << ",";
+//            row << left[i] << ",";
+//            row << right[i] << ",";
+//            row << appState << ",";
+//            row << "\n";
             
-            logFile << row; //soon to be removed
+            //logFile << row; //soon to be removed
             
             webBuffer.push_back(row.str());
             //webBuffer[(webBufferstartIdx+bufferCtr)%BUFFER_WEB_LENGTH] = row.str();
@@ -187,7 +173,17 @@ void ofApp::update()
             
             if (timeslice.size()>1 && timeslice.size()%256==0)
             {
-                cout << "Doooone!\n";
+                //cout << "Doooone!\n";
+                fft->setSignal(timeslice);
+                
+                float* curFft = fft->getAmplitude();
+                
+                //memcpy(&fftoutput[0], curFft, sizeof(float) * fft->getBinSize());
+                for (int i= 0; i<fft->getBinSize(); i++) {
+                    row << curFft[i] << ",";
+                }
+                row << "\n";
+                logFile << row.str();
                 reportOSCEvent();
                 timeslice.clear();
             }
@@ -199,7 +195,7 @@ void ofApp::update()
     else{
         //Get any and all bytes off the serial port
         ofxbci.update(false); //Param is to echo to the command line
-        //ofxbci2.update(false);
+
         if(ofxbci.isNewDataPacketAvailable())// || ofxbci2.isNewDataPacketAvailable())
         {
             vector<dataPacket_ADS1299> newData = ofxbci.getData();
@@ -215,27 +211,46 @@ void ofApp::update()
                 plot1->update(newData[i].values[0]);
                 //plot2->update(newData[i].values[6] - newData[i].values[5]);
                 
-                //Create the row, which is then pushed both to the logfile and to the server
-                row << newData[i].sampleIndex << ",";
-                row << newData[i].values[0] << ",";
-                row << newData[i].values[1] << ",";
-                //row << newData[i].values[6] - newData[i].values[5] << ",";
-                row << appState << ",";
-                row << "\n";
-
-                logFile << row.str(); //soon to be removed
-                
-                webBuffer.push_back(row.str());
-                
                 timeslice.push_back(newData[i].values[0]*.02232);
-                
                 if (timeslice.size()>1 && timeslice.size()%256==0)
                 {
-                    cout << "Doooone!\n";
-                    reportOSCEvent();
-                    timeslice.clear();
-                }
                     
+                    fft->setSignal(timeslice);
+                    
+                    float* curFft = fft->getAmplitude();
+                    
+                    //memcpy(&fftoutput[0], curFft, sizeof(float) * fft->getBinSize());
+                    for (int i= 0; i<fft->getBinSize(); i++) {
+                        fftoutput[i] = curFft[i];
+                        cout << curFft[i];
+                    }
+                    
+                    /*for (int i=0; i<fftoutput.size(); ++i) {
+                        row << fftoutput[i] << ", ";
+                    }
+                    row << "\n"; */
+                    
+                    reportOSCEvent();
+                     timeslice.clear();
+                    
+                
+                    logFile << row.str(); //soon to be removed
+                    webBuffer.push_back(row.str());
+                }
+                
+                //Create the row, which is then pushed both to the logfile and to the server
+//                row << newData[i].sampleIndex << ",";
+//                row << newData[i].values[0] << ",";
+//                row << newData[i].values[1] << ",";
+//                //row << newData[i].values[6] - newData[i].values[5] << ",";
+//                row << appState << ",";
+//                row << "\n";
+
+                
+                
+                
+                
+                
             }
             
 //            //The second channel (duplicating code above)
@@ -343,6 +358,28 @@ void ofApp::draw()
         verdana30.drawString("Just relax... :)", WINDOW_WIDTH/2-150, 600);
     }
 
+    ofPushStyle();
+    ofPushMatrix();
+    ofTranslate(32, 170, 0);
+    
+    ofSetColor(225);
+    ofDrawBitmapString("Left Channel", 4, 18);
+    
+    ofSetLineWidth(1);
+    ofRect(0, 0, 512, 200);
+    
+    ofSetColor(245, 58, 135);
+    ofSetLineWidth(2);
+    
+    ofBeginShape();
+    for (unsigned int i = 0; i < fftoutput.size(); i++){
+        ofVertex(i*2, fftoutput[i]);
+    }
+    ofEndShape(false);
+    
+    ofPopMatrix();
+	ofPopStyle();
+    
 
 }
 
