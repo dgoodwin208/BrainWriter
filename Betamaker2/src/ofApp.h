@@ -94,6 +94,6 @@ public:
     bool uploadingToWeb;
     
     ofxFft* fft;
-    vector <float> timeslice;
+    vector<vector <float> > timeslicesPerChannel;
     vector<float> fftoutput;
 };
