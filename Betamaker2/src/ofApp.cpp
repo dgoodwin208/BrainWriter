@@ -149,11 +149,14 @@ void ofApp::update()
     
     if(DEBUG_MODE){
         int audio_data_size = left.size();
+        float filtered=0;
         for (int i=0; i<audio_data_size; ++i) {
             ostringstream row;
             
+            filtered =filt.update(left[i]);
+            printf("Sees data %f, %f\n",filtered,right[i] );
             //Update the plots with the latest data from the OpenBCI units
-            plot1->update(left[i]);
+            plot1->update(filtered);
             plot2->update(right[i]);
             
             //Create the row, which is then pushed both to the logfile and to the server
@@ -178,7 +181,6 @@ void ofApp::update()
                 
                 float* curFft = fft->getAmplitude();
                 
-                //memcpy(&fftoutput[0], curFft, sizeof(float) * fft->getBinSize());
                 for (int i= 0; i<fft->getBinSize(); i++) {
                     row << curFft[i] << ",";
                 }

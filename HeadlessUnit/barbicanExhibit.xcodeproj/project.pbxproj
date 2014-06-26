@@ -7,7 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		110799E21943EBBB00F67692 /* ofxHistoryPlot.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 110799E01943EBBB00F67692 /* ofxHistoryPlot.cpp */; };
 		117385EC19494979003108FB /* ofxHttpUtils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 117385EA19494979003108FB /* ofxHttpUtils.cpp */; };
 		1192F98E1955361D00DBF35E /* ofxOpenBCI.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1192F9841955361D00DBF35E /* ofxOpenBCI.cpp */; };
 		1192FA231955393400DBF35E /* IpEndpointName.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1192F9FD1955393400DBF35E /* IpEndpointName.cpp */; };
@@ -32,7 +31,6 @@
 		1192FAA11956047800DBF35E /* ofxFftBasic.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1192FA961956047800DBF35E /* ofxFftBasic.cpp */; };
 		1192FAA21956047800DBF35E /* ofxFftw.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1192FA981956047800DBF35E /* ofxFftw.cpp */; };
 		1192FAA31956047800DBF35E /* ofxProcessFFT.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1192FA9A1956047800DBF35E /* ofxProcessFFT.cpp */; };
-		11B86EC4195B903100CC1CA4 /* ofxInlineFilter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 11B86EC2195B903100CC1CA4 /* ofxInlineFilter.cpp */; };
 		1cc07c1a616f29eb8eec3d21fc4303e8 /* SearchPath.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8d76b424a6df4d70aaccdbae8091beb8 /* SearchPath.cpp */; };
 		3336758d15fd0710326aac25b5ea3bd8 /* serial.cc in Sources */ = {isa = PBXBuildFile; fileRef = 47b9a234b65d63015c0cfedd20ab8f43 /* serial.cc */; };
 		3c9a355a55d68a8e882fef85fa1ef587 /* RegexPathFilter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 13d68f0c2cae7809d621924cd66c570b /* RegexPathFilter.cpp */; };
@@ -111,8 +109,6 @@
 		079299a87017edb0524077eac15516e8 /* SerialDevice.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = SerialDevice.h; path = ../../../addons/ofxSerial/libs/ofxSerial/include/ofx/IO/SerialDevice.h; sourceTree = SOURCE_ROOT; };
 		0b6179498d0110bd2e161373d141a6c9 /* DirectoryWatcherManager.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 30; name = DirectoryWatcherManager.cpp; path = ../../../addons/ofxIO/libs/ofxIO/src/DirectoryWatcherManager.cpp; sourceTree = SOURCE_ROOT; };
 		0fc82546c315d104cc8178d758f34945 /* PathFilterCollection.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = PathFilterCollection.h; path = ../../../addons/ofxIO/libs/ofxIO/include/ofx/IO/PathFilterCollection.h; sourceTree = SOURCE_ROOT; };
-		110799E01943EBBB00F67692 /* ofxHistoryPlot.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ofxHistoryPlot.cpp; sourceTree = "<group>"; };
-		110799E11943EBBB00F67692 /* ofxHistoryPlot.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ofxHistoryPlot.h; sourceTree = "<group>"; };
 		117385E919494979003108FB /* ofxHttpTypes.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ofxHttpTypes.h; sourceTree = "<group>"; };
 		117385EA19494979003108FB /* ofxHttpUtils.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ofxHttpUtils.cpp; sourceTree = "<group>"; };
 		117385EB19494979003108FB /* ofxHttpUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ofxHttpUtils.h; sourceTree = "<group>"; };
@@ -172,8 +168,6 @@
 		1192FA991956047800DBF35E /* ofxFftw.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ofxFftw.h; sourceTree = "<group>"; };
 		1192FA9A1956047800DBF35E /* ofxProcessFFT.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ofxProcessFFT.cpp; sourceTree = "<group>"; };
 		1192FA9B1956047800DBF35E /* ofxProcessFFT.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ofxProcessFFT.h; sourceTree = "<group>"; };
-		11B86EC2195B903100CC1CA4 /* ofxInlineFilter.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = ofxInlineFilter.cpp; path = ofxOsc/ofxInlineFilter.cpp; sourceTree = "<group>"; };
-		11B86EC3195B903100CC1CA4 /* ofxInlineFilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ofxInlineFilter.h; path = ofxOsc/ofxInlineFilter.h; sourceTree = "<group>"; };
 		120db29f900e26b84d1a44c860f7b354 /* RecursiveDirectoryIterator.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = RecursiveDirectoryIterator.h; path = ../../../addons/ofxIO/libs/Poco/Foundation/include/Poco/RecursiveDirectoryIterator.h; sourceTree = SOURCE_ROOT; };
 		13d68f0c2cae7809d621924cd66c570b /* RegexPathFilter.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 30; name = RegexPathFilter.cpp; path = ../../../addons/ofxIO/libs/ofxIO/src/RegexPathFilter.cpp; sourceTree = SOURCE_ROOT; };
 		14290ed8de68778ae3023fbc92cbe43d /* LinkFilter.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = LinkFilter.h; path = ../../../addons/ofxIO/libs/ofxIO/include/ofx/IO/LinkFilter.h; sourceTree = SOURCE_ROOT; };
@@ -214,7 +208,7 @@
 		E45BE9770E8CC7DD009D7055 /* CoreServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreServices.framework; path = /System/Library/Frameworks/CoreServices.framework; sourceTree = "<absolute>"; };
 		E45BE9790E8CC7DD009D7055 /* OpenGL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGL.framework; path = /System/Library/Frameworks/OpenGL.framework; sourceTree = "<absolute>"; };
 		E45BE97A0E8CC7DD009D7055 /* QuickTime.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuickTime.framework; path = /System/Library/Frameworks/QuickTime.framework; sourceTree = "<absolute>"; };
-		E4B69B5B0A3A1756003C02F2 /* betamakerDebug.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = betamakerDebug.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		E4B69B5B0A3A1756003C02F2 /* barbicanExhibitDebug.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = barbicanExhibitDebug.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		E4B69E1D0A3A1BDC003C02F2 /* main.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = main.cpp; path = src/main.cpp; sourceTree = SOURCE_ROOT; };
 		E4B6FCAD0C3E899E008CF71C /* openFrameworks-Info.plist */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text.plist.xml; path = "openFrameworks-Info.plist"; sourceTree = "<group>"; };
 		E4C2424410CC5A17004149E2 /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = /System/Library/Frameworks/AppKit.framework; sourceTree = "<absolute>"; };
@@ -278,16 +272,6 @@
 				f57139f864890f6358112c2543a150da /* win.h */,
 			);
 			name = impl;
-			sourceTree = "<group>";
-		};
-		110799DF1943EBBB00F67692 /* ofxHistoryPlot */ = {
-			isa = PBXGroup;
-			children = (
-				110799E01943EBBB00F67692 /* ofxHistoryPlot.cpp */,
-				110799E11943EBBB00F67692 /* ofxHistoryPlot.h */,
-			);
-			name = ofxHistoryPlot;
-			path = ../../../addons/ofxHistoryPlot;
 			sourceTree = "<group>";
 		};
 		117385E419494979003108FB /* ofxHttpUtils */ = {
@@ -664,7 +648,6 @@
 				1192FA811956047800DBF35E /* ofxFFT */,
 				1192F97C1955361D00DBF35E /* ofxOpenBCI */,
 				117385E419494979003108FB /* ofxHttpUtils */,
-				110799DF1943EBBB00F67692 /* ofxHistoryPlot */,
 				a8792b4b23b2f70e1065d67f4b1ee534 /* ofxIO */,
 				bdba4e6bce9c79945ef60873ec0b8f95 /* ofxSerial */,
 			);
@@ -727,7 +710,7 @@
 				E4EEC9E9138DF44700A80321 /* openFrameworks */,
 				BB4B014C10F69532006C3DED /* addons */,
 				E45BE5980E8CC70C009D7055 /* frameworks */,
-				E4B69B5B0A3A1756003C02F2 /* betamakerDebug.app */,
+				E4B69B5B0A3A1756003C02F2 /* barbicanExhibitDebug.app */,
 			);
 			sourceTree = "<group>";
 		};
@@ -738,8 +721,6 @@
 				E4B69E1D0A3A1BDC003C02F2 /* main.cpp */,
 				19c22cd05d10f78b32ff80c6be3a9385 /* ofApp.cpp */,
 				84f6287fa54b66c746947875f6690182 /* ofApp.h */,
-				11B86EC2195B903100CC1CA4 /* ofxInlineFilter.cpp */,
-				11B86EC3195B903100CC1CA4 /* ofxInlineFilter.h */,
 			);
 			path = src;
 			sourceTree = SOURCE_ROOT;
@@ -874,9 +855,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		E4B69B5A0A3A1756003C02F2 /* betamaker */ = {
+		E4B69B5A0A3A1756003C02F2 /* barbicanExhibit */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = E4B69B5F0A3A1757003C02F2 /* Build configuration list for PBXNativeTarget "betamaker" */;
+			buildConfigurationList = E4B69B5F0A3A1757003C02F2 /* Build configuration list for PBXNativeTarget "barbicanExhibit" */;
 			buildPhases = (
 				E4B69B580A3A1756003C02F2 /* Sources */,
 				E4B69B590A3A1756003C02F2 /* Frameworks */,
@@ -888,9 +869,9 @@
 			dependencies = (
 				E4EEB9AC138B136A00A80321 /* PBXTargetDependency */,
 			);
-			name = betamaker;
+			name = barbicanExhibit;
 			productName = myOFApp;
-			productReference = E4B69B5B0A3A1756003C02F2 /* betamakerDebug.app */;
+			productReference = E4B69B5B0A3A1756003C02F2 /* barbicanExhibitDebug.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -901,7 +882,7 @@
 			attributes = {
 				LastUpgradeCheck = 0460;
 			};
-			buildConfigurationList = E4B69B4D0A3A1720003C02F2 /* Build configuration list for PBXProject "betamaker" */;
+			buildConfigurationList = E4B69B4D0A3A1720003C02F2 /* Build configuration list for PBXProject "barbicanExhibit" */;
 			compatibilityVersion = "Xcode 3.2";
 			developmentRegion = English;
 			hasScannedForEncodings = 0;
@@ -922,7 +903,7 @@
 			);
 			projectRoot = "";
 			targets = (
-				E4B69B5A0A3A1756003C02F2 /* betamaker */,
+				E4B69B5A0A3A1756003C02F2 /* barbicanExhibit */,
 			);
 		};
 /* End PBXProject section */
@@ -973,7 +954,6 @@
 				117385EC19494979003108FB /* ofxHttpUtils.cpp in Sources */,
 				5bb82711925a3764235c2ceb757c45d5 /* FileExtensionFilter.cpp in Sources */,
 				1192FA2B1955393400DBF35E /* OscTypes.cpp in Sources */,
-				110799E21943EBBB00F67692 /* ofxHistoryPlot.cpp in Sources */,
 				1192FA301955393400DBF35E /* ofxOscSender.cpp in Sources */,
 				1192FA2A1955393400DBF35E /* OscReceivedElements.cpp in Sources */,
 				b3e6d60405574847412d7441c2743467 /* HiddenFileFilter.cpp in Sources */,
@@ -996,7 +976,6 @@
 				1192FA2E1955393400DBF35E /* ofxOscParameterSync.cpp in Sources */,
 				1192FA251955393400DBF35E /* UdpSocket.cpp in Sources */,
 				1192FA9F1956047800DBF35E /* ofxEasyFft.cpp in Sources */,
-				11B86EC4195B903100CC1CA4 /* ofxInlineFilter.cpp in Sources */,
 				1192FAA01956047800DBF35E /* ofxFft.cpp in Sources */,
 				bfb6c2dabb7995e4e5a30dd41b942c7e /* RecursiveDirectoryIterator.cpp in Sources */,
 				ca92728f8f4d9f34c80adc58ffe32cab /* RecursiveDirectoryIteratorStategies.cpp in Sources */,
@@ -1285,7 +1264,7 @@
 					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_52)",
 					/Users/dangoodwin/Code/OpenFrameworks/addons/ofxFFT/libs/fftw/lib,
 				);
-				PRODUCT_NAME = betamakerDebug;
+				PRODUCT_NAME = barbicanExhibitDebug;
 				WRAPPER_EXTENSION = app;
 			};
 			name = Debug;
@@ -1412,7 +1391,7 @@
 					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_51)",
 					/Users/dangoodwin/Code/OpenFrameworks/addons/ofxFFT/libs/fftw/lib,
 				);
-				PRODUCT_NAME = betamaker;
+				PRODUCT_NAME = barbicanExhibit;
 				WRAPPER_EXTENSION = app;
 			};
 			name = Release;
@@ -1420,7 +1399,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		E4B69B4D0A3A1720003C02F2 /* Build configuration list for PBXProject "betamaker" */ = {
+		E4B69B4D0A3A1720003C02F2 /* Build configuration list for PBXProject "barbicanExhibit" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				E4B69B4E0A3A1720003C02F2 /* Debug */,
@@ -1429,7 +1408,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		E4B69B5F0A3A1757003C02F2 /* Build configuration list for PBXNativeTarget "betamaker" */ = {
+		E4B69B5F0A3A1757003C02F2 /* Build configuration list for PBXNativeTarget "barbicanExhibit" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				E4B69B600A3A1757003C02F2 /* Debug */,

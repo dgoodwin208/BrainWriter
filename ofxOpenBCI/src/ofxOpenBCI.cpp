@@ -18,7 +18,6 @@
 // Morphed from OpenBCI_ADS1299 to ofxOpenBCI by Daniel Goodwin, May 2014
 /////////////////////////////////////////////////////////////////////////////
 
-//#include <string>
 #include <algorithm>
 #include <time.h>
 #include <sys/time.h>
@@ -28,6 +27,8 @@
 #define byte char
 #define IS_MAC 1
 #define MAX_LEFTOVER_SERIAL_BYTES 200
+#define COUNT_TO_MICROVOLT .02232
+
 using namespace ofx::IO;
 
 string command_stop = "s";
@@ -42,11 +43,15 @@ string command_activated_channel_initializer[] = {"q", "w", "e", "r", "t", "y", 
 std::vector<string> command_deactivate_channel(command_deactivated_channel_initializer, command_deactivated_channel_initializer + 8);
 std::vector<string> command_activate_channel(command_activated_channel_initializer, command_activated_channel_initializer + 8);
 
+//A string variable here keeps track if there is currently a port in use
+//This allows two OpenBCI units to be used in parallel
+string ofxOpenBCI::usedPort;
+
 ofxOpenBCI::ofxOpenBCI()
 {
     cout << "Trying to set it up...\n";
     dataMode =DATAMODE_BIN;
-
+    
     int currBuffIndex = 0;
     int num_channels = 8;
     curBuffIndex = 0;
@@ -65,6 +70,10 @@ ofxOpenBCI::ofxOpenBCI()
     for(std::size_t i = 0; i < devicesInfo.size(); ++i)
     {
         cout << "Trying to connect to: " << devicesInfo[i] <<"\n";
+        
+        if(devicesInfo[i].getName() == usedPort)
+            continue;
+        
         bool success = serialDevice.setup(devicesInfo[i],
                                           115200,
                                           SerialDevice::DATA_BITS_EIGHT,
@@ -75,6 +84,7 @@ ofxOpenBCI::ofxOpenBCI()
         if(success)
         {
             ofLogNotice("ofApp::setup") << "Successfully setup " << devicesInfo[i] << "\n";
+            ofxOpenBCI::usedPort = devicesInfo[i].getName();
             break;
         }
         else
@@ -151,7 +161,6 @@ void ofxOpenBCI::update(bool echoChar) {
         curBuffIndex++;
     }
 
-
     
     //Then, get all bytes off the serial port
     int bytesAvailable = serialDevice.available();
@@ -175,7 +184,7 @@ void ofxOpenBCI::update(bool echoChar) {
 
     //If there was no data on the wire, then we're done
     if (curBuffIndex==0){
-        printf("No data on wire\n");
+        //printf("No data on wire\n");
         return;
     }
     curBuffIndex--; //Decrement to the last entered byte
@@ -188,7 +197,7 @@ void ofxOpenBCI::update(bool echoChar) {
         
         //And if there's no complete packets in this data
         if (lastPacketEndIdx<0){
-            cout << "No complete packets found \n";
+            cout << "No complete packets found of " << currBuffer.size() << "bytes\n";
             break;
         }
     }
@@ -245,7 +254,7 @@ vector<dataPacket_ADS1299> ofxOpenBCI::getData()
         output.push_back(outputPacketBuffer.front());
         outputPacketBuffer.pop();
     }
-    
+
     return output;
 }
 
@@ -290,79 +299,6 @@ void ofxOpenBCI::changeChannelState(int Ichan,bool activate) {
  38: End_char 0xC0
  */
 
-int ofxOpenBCI::interpretBinaryMessage(int endInd) {
-    
-    //assume curBuffIndex has already been incremented to the next open spot
-    int startInd = endInd;
-
-    
-    //roll backwards to find the start of the packet
-    while ((startInd >= 0) && (currBuffer[startInd] != BYTE_START)) {
-        startInd--;
-    }
-    
-    //cout << startInd << ", ";
-    
-    if (startInd < 0) {
-        printf("Dropped this packet because it didn't have a start byte\n");
-    }
-    else if ((endInd - startInd + 1) < 3) {
-        // printf("data packet isn't long enough to hold any data...so ignore this data packet\n");
-    }
-    else {
-        
-        //Get the number of bytes in the payload. Defined as:
-        //Payload Length in Bytes = (1+Nchan)*4= 8*4+4 = 36 bytes
-        unsigned char n_bytes = currBuffer[startInd + 1]; //this is the number of bytes in the payload
-        
-        printf("Expected %i bytes in this packet\n", n_bytes);
-        
-        // check to see if the payload is at least the minimum length
-        if (n_bytes < 4*MIN_PAYLOAD_LEN_INT32) {
-            //bad data.  ignore this packet;
-            printf("\tAhh it's a runt we have here\n");
-        }
-        else {
-            for (int i = startInd;i<=endInd ; ++i) {
-                printf("%02X, ",currBuffer[i]);
-            }
-            printf("\n");
-            //check to see if the payload length matches the measured packet size
-            
-            if ((startInd + 1 + n_bytes + 1) != endInd) {
-                printf("Bad packet: %i, %i. Got: %i \n", startInd, endInd, startInd + 1 + n_bytes + 1);
-            }
-            else {
-                
-
-                int nInt32 = n_bytes / 4;
-                
-                dataPacket_ADS1299 dataPacket = dataPacket_ADS1299(n_bytes);
-                dataPacket.timestamp = time(NULL);
-                //printf("Bytes 1 and 2: %2X, %2X",currBuffer[startInd], currBuffer[startInd+1]);
-                
-                dataPacket.sampleIndex = interpretAsInt32(&currBuffer[startInd+2]); //read the int32 value
-               
-                //Full doc here: http://www.openbci.com/forums/topic/understanding-serial-interface/
-                startInd += 6;  //increment the start index
-                
-                int nValToRead = min<int>(nInt32-1,dataPacket.values.size());
-                for (int i=0; i < nValToRead;i++) {
-                    dataPacket.values[i] = interpretAsInt32(&currBuffer[startInd]); //read the int32 value
-                    startInd += 4;  //increment the start index
-                }
-                outputPacketBuffer.push(dataPacket);
-                //cout << "[Added another Packet!]\n";
-            }
-            
-            
-        }
-    }
- 
-    printf("\n");
-    return startInd;
-}
-
 //Rewrote the interpretBinaryMessage fxn to avoid stumbling over a BYTE_END or BYTE_START on accident
 int ofxOpenBCI::interpretBinaryMessageForward(int startIdx) {
     
@@ -380,13 +316,6 @@ int ofxOpenBCI::interpretBinaryMessageForward(int startIdx) {
         
         endIdx = (startIdx + 1 + n_bytes + 1);
         
-
-        //Prints out the entire message to confirm it's working well
-//        for (int i = startIdx;i<=endIdx ; ++i)
-//            printf("%02X, ",currBuffer[i]);
-//        printf("\n");
-
-        
         int nInt32 = n_bytes / 4;
         
         dataPacket_ADS1299 dataPacket = dataPacket_ADS1299(nInt32);
@@ -399,7 +328,7 @@ int ofxOpenBCI::interpretBinaryMessageForward(int startIdx) {
         
         int nValToRead = min<int>(nInt32-1,dataPacket.values.size());
         for (int i=0; i < nValToRead;i++) {
-            dataPacket.values[i] = interpretAsInt32(&currBuffer[startIdx]); //read the int32 value
+            dataPacket.values[i] = interpretAsInt32(&currBuffer[startIdx])*COUNT_TO_MICROVOLT; //read the int32 value
             startIdx += 4;  //increment the start index
         }
         outputPacketBuffer.push(dataPacket);

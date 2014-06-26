@@ -28,11 +28,9 @@
 
 #include "ofMain.h"
 #include "ofxOpenBCI.h"
-#include "ofxHistoryPlot.h"
 #include "ofxHttpUtils.h"
 #include "ofxOsc.h"
 #include "ofxFft.h"
-#include "ofxInlineFilter.h"
 
 using namespace ofx::IO;
 
@@ -46,38 +44,18 @@ public:
 
     void keyPressed(int key);
 
-
+    void setupNewUser();
+    void concludeUserExperience();
+    
+    //OpenBCI
     ofxOpenBCI ofxbci;
-    //ofxOpenBCI ofxbci2;
-
-
-    //-------Debug: using audio input --------//
-    ofSoundStream soundStream;
-    void audioIn(float * input, int bufferSize, int nChannels);
-    vector <float> left;
-    vector <float> right;
+    ofxOpenBCI ofxbci2;
     
-    ofxHistoryPlot * plot1; //manual
-    ofxHistoryPlot * plot2;
+    bool hasSentAutoStart;
+    bool hasSentApplyFilter;
     ofstream logFile;
-    
     time_t sessionStartTime;
-    //-----Mental Math app-----//
-    
-    void setNewProblem();
-    
-    int appState;
-    time_t lastStateChangeTime;
-    time_t lastRecivedData;
-    int secondsForNextPeriod;
-    ofTrueTypeFont verdana30;
-    bool didAnswer;
-    int operand1;
-    int operand2;
-    int operatorIdx;
-    string answer;
-    //-------------------------//
-    
+        
     //-------- For posting to the web ---------//
     void newResponse(ofxHttpResponse & response);
     ofxHttpUtils httpUtils;
@@ -91,12 +69,21 @@ public:
     
     //-------- For posting to the OSC -------//
     ofxOscSender sender;
-    void reportOSCEvent();
+    ofxOscReceiver receiver;
+    void reportOSCEvent(int playerNum, float alpha, float beta);
+    void reportDebugOSCEvent(string row);
     bool uploadingToWeb;
     
-    ofxFft* fft;
-    vector<vector <float> > timeslicesPerChannel;
-    vector<float> fftoutput;
-    vector<float> timeslice;
-    ofxInlineFilter filt;
+    ofxFft* fft_chan1;
+    ofxFft* fft_chan2;
+    //vector<vector <float> > timeslicesPerChannel;
+    vector<float> timeslice_board1_chan1;
+    vector<float> timeslice_board1_chan2;
+    vector<float> timeslice_board2_chan1;
+    vector<float> timeslice_board2_chan2;
+
+    vector<float> fftoutput_board1_chan1;
+    vector<float> fftoutput_board1_chan2;
+    vector<float> fftoutput_board2_chan1;
+    vector<float> fftoutput_board2_chan2;
 };
