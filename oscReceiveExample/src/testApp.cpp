@@ -101,14 +101,14 @@ void testApp::draw(){
     xPos = (xPos+1)%640;
 
     ofSetColor(0, 0, 255,255);
-    ofRect(xPos, 240, 1, alpha*5);
+    ofRect(xPos, 240, 1, alpha);
 
     ofSetColor(0, 255, 0,255);
     ofPushMatrix();
     ofTranslate(320, 240);
     ofRotate(180);
     ofTranslate(-320, 0);
-    ofRect(640-xPos, 0, 1, beta*5);
+    ofRect(640-xPos, 0, 1, beta);
     ofPopMatrix();
 
 }

@@ -155,12 +155,22 @@ void ofApp::update()
         ofxbci2.startStreaming();
         hasSentAutoStart = true;
     }
-    if (!hasSentApplyFilter && time(NULL)>sessionStartTime+7) {
+    else if (!hasSentApplyFilter && time(NULL)>sessionStartTime+7) {
         ofxbci.toggleFilter(true);
         ofxbci2.toggleFilter(true);
         hasSentApplyFilter = true;
     }
-    
+    else if (!hasSentStopOtherChannels && time(NULL)>sessionStartTime+9 ){
+        
+        printf("Disabling all other channels but 0 and 1\n");
+        
+        for (int i = 2; i<8; ++i) {
+            ofxbci.changeChannelState(i, false);
+        }
+        hasSentStopOtherChannels = true;
+
+    }
+        
     //Get any and all bytes off the serial port
     ofxbci.update(false); //Param is to echo to the command line
     
@@ -194,10 +204,11 @@ void ofApp::update()
             //For now, we will just sum the magnitudes together
             float alpha = 0.;
             float beta=0.;
-            
+            float max= 0.;
             for (int i= 0; i<fft_chan1->getBinSize(); i++) {
                 fftoutput_board1_chan1[i] = curFft1[i];
                 fftoutput_board1_chan2[i] = curFft2[i];
+                
                 if (i>ALPHA_START && i<ALPHA_END)
                     alpha+=fftoutput_board1_chan1[i]+fftoutput_board1_chan2[i];
                 else if (i>BETA_START && i<BETA_END)
@@ -249,7 +260,7 @@ void ofApp::update()
                 row << fftoutput_board2_chan1[i] + fftoutput_board2_chan2[i]  << ",";
             }
             
-            reportDebugOSCEvent(row.str());
+           // reportDebugOSCEvent(row.str());
             
             timeslice_board2_chan1.clear();
             timeslice_board2_chan2.clear();

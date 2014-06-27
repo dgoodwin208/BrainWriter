@@ -53,6 +53,7 @@ public:
     
     bool hasSentAutoStart;
     bool hasSentApplyFilter;
+    bool hasSentStopOtherChannels;
     ofstream logFile;
     time_t sessionStartTime;
         
