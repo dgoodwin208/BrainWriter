@@ -8,9 +8,9 @@
 
 #include <string.h>
 #include "ofMain.h"
-#include "ofxSerial.h"
+#include "ofSerial.h"
 
-using namespace ofx::IO;
+//using namespace ofx::IO;
 
 #define OPENBCI_BAUDRATE 115200
 #define byte char
@@ -88,7 +88,7 @@ class ofxOpenBCI {
     
     vector<dataPacket_ADS1299> getData();
 
-    SerialDevice serialDevice;
+    ofSerial serialDevice;
 
     int dataMode;
     int startStreaming();
@@ -111,7 +111,7 @@ class ofxOpenBCI {
 
     private: vector<byte> currBuffer;
     private: queue<dataPacket_ADS1299> outputPacketBuffer;
+    void sendSignalToBoard(string input);
     
-
 };
 

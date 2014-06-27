@@ -29,8 +29,6 @@
 #define MAX_LEFTOVER_SERIAL_BYTES 200
 #define COUNT_TO_MICROVOLT .02232
 
-using namespace ofx::IO;
-
 string command_stop = "s";
 string command_startText = "x";
 string command_startBinary = "b";
@@ -65,26 +63,26 @@ ofxOpenBCI::ofxOpenBCI()
     string deviceQueryString = "COM*";
     #endif
     
-    std::vector<SerialDeviceInfo> devicesInfo = SerialDeviceUtils::getDevices(deviceQueryString);
-
+    std::vector<ofSerialDeviceInfo> devicesInfo = serialDevice.getDeviceList();
+    
     for(std::size_t i = 0; i < devicesInfo.size(); ++i)
     {
-        cout << "Trying to connect to: " << devicesInfo[i] <<"\n";
+        cout << "Trying to connect to: " << devicesInfo[i].getDeviceName() <<"\n";
         
-        if(devicesInfo[i].getName() == usedPort)
+        if(devicesInfo[i].getDeviceName() == usedPort)
             continue;
         
-        bool success = serialDevice.setup(devicesInfo[i],
-                                          115200,
-                                          SerialDevice::DATA_BITS_EIGHT,
+        bool success = serialDevice.setup(devicesInfo[i].getDeviceName(),
+                                          115200);
+                                          /*SerialDevice::DATA_BITS_EIGHT,
                                           SerialDevice::PAR_NONE,
                                           SerialDevice::STOP_ONE,
-                                          SerialDevice::FLOW_CTRL_HARDWARE);
+                                          SerialDevice::FLOW_CTRL_HARDWARE*/
         
         if(success)
         {
             ofLogNotice("ofApp::setup") << "Successfully setup " << devicesInfo[i] << "\n";
-            ofxOpenBCI::usedPort = devicesInfo[i].getName();
+            ofxOpenBCI::usedPort = devicesInfo[i].getDeviceName();
             break;
         }
         else
@@ -95,21 +93,27 @@ ofxOpenBCI::ofxOpenBCI()
     //serial_openBCI(serial);
     
 }
+
+//ASSUMES A ONE CHARACTER INPUT!
+void ofxOpenBCI::sendSignalToBoard(string input){
+    serialDevice.writeBytes((unsigned char*)(input + "\n").c_str(),2);
+    return;
+}
 //start the data transfer using the current mode
 int ofxOpenBCI::startStreaming() {
     
     //stopDataTransfer();
     switch (dataMode) {
         case DATAMODE_BIN:
-            serialDevice.writeBytes(command_startBinary + "\n");
+            sendSignalToBoard(command_startBinary);
             cout << "Processing: OpenBCI_ADS1299: starting binary\n";
             break;
         case DATAMODE_BIN_4CHAN:
-            serialDevice.writeBytes(command_startBinary_4chan + "\n");
+            sendSignalToBoard(command_startBinary_4chan);
             cout << "Processing: OpenBCI_ADS1299: starting binary 4-channel\n";
             break;
         case DATAMODE_TXT:
-            serialDevice.writeBytes(command_startText + "\n");
+            sendSignalToBoard(command_startText);
             cout << "Processing: OpenBCI_ADS1299: starting text";
             break;
     }
@@ -120,24 +124,25 @@ int ofxOpenBCI::startStreaming() {
 void ofxOpenBCI::toggleFilter(bool turnOn)
 {
     if (turnOn){
-        serialDevice.writeBytes(command_activateFilters + "\n");
+        sendSignalToBoard(command_activateFilters);
         cout << "Processing: OpenBCI_ADS1299: engaging filter\n";
     }
     else
     {
-        serialDevice.writeBytes(command_deactivateFilters + "\n");
+        sendSignalToBoard(command_deactivateFilters);
         cout << "Processing: OpenBCI_ADS1299: deactivating filter\n";
     }
         
 }
 void ofxOpenBCI::triggerTestSignal(bool turnOn)
 {
-    serialDevice.writeBytes(command_start_test_signal + "\n");
+    sendSignalToBoard(command_start_test_signal);
     cout << "Generating test signal\n";
 }
 
 int ofxOpenBCI::stopStreaming() {
-    serialDevice.writeBytes(command_stop + "\n");
+    sendSignalToBoard(command_stop);
+//    serialDevice.writeBytes(command_stop + "\n");
     serialDevice.flush(); // clear anything in the com port's buffer
     return 0;
 }
@@ -271,9 +276,9 @@ void ofxOpenBCI::changeChannelState(int Ichan,bool activate) {
     if (serialPortConnected) {
         if ((Ichan >= 0) && (Ichan < command_activate_channel.size())) {
             if (activate) {
-                serialDevice.writeBytes(command_activate_channel[Ichan] + "\n");
+                sendSignalToBoard(command_activate_channel[Ichan]);
             } else {
-                serialDevice.writeBytes(command_deactivate_channel[Ichan] + "\n");
+                sendSignalToBoard(command_deactivate_channel[Ichan]);
             }
         }
     }
