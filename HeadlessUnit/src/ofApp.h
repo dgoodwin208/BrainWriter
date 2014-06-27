@@ -32,7 +32,7 @@
 #include "ofxOsc.h"
 #include "ofxFft.h"
 
-using namespace ofx::IO;
+
 
 
 class ofApp: public ofBaseApp
