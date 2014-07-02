@@ -105,12 +105,18 @@ void ofApp::setup()
         left.assign(bufferSize, 0.0);
         right.assign(bufferSize, 0.0);
         soundStream.listDevices();
-        soundStream.setDeviceID(1); //Set the built-in Mac Mic
+        soundStream.setDeviceID(0); //Set the built-in Mac Mic
         soundStream.setup(this, 0, 2, 44100, bufferSize, 4);
+        
+        filtAlpha.setup(4, 44100, 1, 10);
+        filtBeta.setup(4, 44100, 15, 30);
     }
     else{
         //ofxbci2.startStreaming();
         ofxbci.startStreaming();
+
+        filtAlpha.setup(4, 250, 6, 15);
+        filtBeta.setup(4, 250, 15, 30);
     }
 
     //------------ SET UP DATA TRANSFER TO WEB DATABASE --------------//
@@ -153,19 +159,20 @@ void ofApp::update()
         for (int i=0; i<audio_data_size; ++i) {
             ostringstream row;
             
-            filtered =filt.update(left[i]);
-            printf("Sees data %f, %f\n",filtered,right[i] );
+            filtered = filtAlpha.update(left[i]);
+            //double filteredBeta =
+            //printf("Sees data %f, %f\n",filtAlpha.update(left[i]),filtBeta.update(left[i]) );
             //Update the plots with the latest data from the OpenBCI units
-            plot1->update(filtered);
-            plot2->update(right[i]);
+            plot1->update(100*filtAlpha.update(left[i]));
+            plot2->update(100*filtBeta.update(left[i]));
             
             //Create the row, which is then pushed both to the logfile and to the server
-//            row << time(NULL) << ",";
-//            row << left[i] << ",";
-//            row << right[i] << ",";
-//            row << appState << ",";
-//            row << "\n";
-            
+            row << time(NULL) << ",";
+            row << left[i] << ",";
+            row << right[i] << ",";
+            row << appState << ",";
+            row << "\n";
+//                logFile << row.str();
             //logFile << row; //soon to be removed
             
             webBuffer.push_back(row.str());
@@ -174,19 +181,19 @@ void ofApp::update()
             
             timeslice.push_back(left[i]);
             
-            if (timeslice.size()>1 && timeslice.size()%256==0)
+            if (timeslice.size()>1 && timeslice.size()%44100==0)
             {
-                //cout << "Doooone!\n";
-                fft->setSignal(timeslice);
-                
-                float* curFft = fft->getAmplitude();
-                
-                for (int i= 0; i<fft->getBinSize(); i++) {
-                    row << curFft[i] << ",";
-                }
-                row << "\n";
-                logFile << row.str();
-                reportOSCEvent();
+//                //cout << "Doooone!\n";
+//                fft->setSignal(timeslice);
+//                
+//                float* curFft = fft->getAmplitude();
+//                
+//                for (int i= 0; i<fft->getBinSize(); i++) {
+//                    row << curFft[i] << ",";
+//                }
+//                row << "\n";
+//                logFile << row.str();
+//                reportOSCEvent();
                 timeslice.clear();
             }
             
@@ -498,7 +505,4 @@ void ofApp::audioIn(float * input, int bufferSize, int nChannels){
 		curVol += right[i] * right[i];
 		numCounted+=2;
 	}
-	
-
-	
 }

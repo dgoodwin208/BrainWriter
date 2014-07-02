@@ -37,4 +37,6 @@ class testApp : public ofBaseApp {
     
         float alpha, beta;
         vector<float> fftMags;
+    
+        float max;
 };

@@ -31,6 +31,7 @@
 #include "ofxHttpUtils.h"
 #include "ofxOsc.h"
 #include "ofxFft.h"
+#include "ofxInlineFilter.h"
 
 
 
@@ -44,27 +45,64 @@ public:
 
     void keyPressed(int key);
 
-    void setupNewUser();
-    void concludeUserExperience();
+    void setupNewUser(int playerNumber);
+    void concludeUserExperience(int playerNum, int score);
     
-    //OpenBCI
+    void processNewUserData(int playerNum, vector<dataPacket_ADS1299> input);
+    //------------------OpenBCI----------------//
     ofxOpenBCI ofxbci;
     ofxOpenBCI ofxbci2;
     
+    //------------Filters for alpha beta ------//
+    ofxInlineFilter filtAlpha_player1;
+    ofxInlineFilter filtBeta_player1;
+    ofxInlineFilter filtAlpha_player2;
+    ofxInlineFilter filtBeta_player2;
+    
+    
+    //-------------Auto start bools -----------//
     bool hasSentAutoStart;
     bool hasSentApplyFilter;
     bool hasSentStopOtherChannels;
-    ofstream logFile;
-    time_t sessionStartTime;
+    
+    //---------Debugging tools, using mic input -----//
+    ofSoundStream soundStream;
+    void audioIn(float * input, int bufferSize, int nChannels);
+    vector <float> left;
+    vector <float> right;
+    bool hasSentSampleUpload;
+    
+    
         
     //-------- For posting to the web ---------//
     void newResponse(ofxHttpResponse & response);
     ofxHttpUtils httpUtils;
-    vector<string> webBuffer;
-    //int webBufferstartIdx; int bufferCtr;//Create a circular buffer
+
+    
+    //User Specific Variables for a particular play session :)
+    ofstream logFile_player1;
+    ofstream logFile_player2;
+    std::vector<vector<float> > rawBuffer_player1;
+    std::vector<vector<float> > rawBuffer_player2;
+    
+    time_t sessionStartTime_player1;
+    time_t sessionStartTime_player2;
+    
+    float user1_max_Alpha;
+    float user1_max_Beta;
+    float user2_max_Alpha;
+    float user2_max_Beta;
+    
+    float user1_last_Alpha;
+    float user1_last_Beta;
+    float user2_last_Alpha;
+    float user2_last_Beta;
+    
+    
+    
+
     int uploadTimePeriod;
     time_t lastUploadTime;
-    int lastUploadedIdx;
     void UploadDataToTheWeb();
     
     
@@ -76,15 +114,12 @@ public:
     bool uploadingToWeb;
     
     ofxFft* fft_chan1;
-    ofxFft* fft_chan2;
-    //vector<vector <float> > timeslicesPerChannel;
+
+    
+    //---------The battery of vectors to store time domain data-----//
     vector<float> timeslice_board1_chan1;
-    vector<float> timeslice_board1_chan2;
     vector<float> timeslice_board2_chan1;
-    vector<float> timeslice_board2_chan2;
 
     vector<float> fftoutput_board1_chan1;
-    vector<float> fftoutput_board1_chan2;
     vector<float> fftoutput_board2_chan1;
-    vector<float> fftoutput_board2_chan2;
 };

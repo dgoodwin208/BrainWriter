@@ -9,10 +9,8 @@
 #include "ofxInlineFilter.h"
 #include <math.h>
 
-//This filter code was taken from http://www.exstrom.com/journal/sigproc/bwbpf.c
-//Another great resource is: http://www-users.cs.york.ac.uk/~fisher/mkfilter
+//Generating an online filter, using the script at http://www-users.cs.york.ac.uk/~fisher/mkfilter
 //And the sample code from this SO article http://stackoverflow.com/questions/664877/i-need-to-implement-a-butterworth-filter-in-c-is-it-easier-get-a-library-with-t
-
 ofxInlineFilter::ofxInlineFilter()
 {
     isSetup = false;
@@ -79,4 +77,3 @@ double ofxInlineFilter::update(float input){
     return x;
 }
 
-    

@@ -12,14 +12,14 @@ from scipy.signal import butter, lfilter
 #Global Parameters
 NBINS_PER_FFT = 10 #for deciding the feature vector length
 #data_file = "/Users/dangoodwin/Code/OpenFrameworks/apps/Brainwriter/Data060914/firstmentalmath(post1drink).csv"
-data_file = "/Users/dangoodwin/Desktop/thinkingandblinking.csv"
-INPUT_CHANNELS = [1,3]
-OUTPUT_CHANNELS = [3]
+data_file = "/Users/dangoodwin/Desktop/secondboardthirdry.csv"
+INPUT_CHANNELS = [2,3]
+OUTPUT_CHANNELS = []
 VIZ_ONLY = True
 ###Create the spectrogram:
 framesz = 1.0 # with a frame size of 50 milliseconds
 hop = 1.0     # how far to go before defining the next frame
-Fs = 250.0
+Fs = 500.0
 lowcut_freq = .5
 highcut_freq = 70.
 
@@ -106,7 +106,7 @@ def readDataFile(data_file, input_channel_indices, outputchannel_idx,xchannel=-1
         inputsignals.append(row)
 
         if xchannel>=0:
-            x.append(int(elts[xchannel]))
+            x.append(float(elts[xchannel]))
 
         if outputchannel_idx:
             for chan in outputchannel_idx:
@@ -186,18 +186,18 @@ def main():
     # for chan in range(0,num_channels):
     #     inputdata[:,chan]= butter_bandpass_filter(inputdata[:,chan], lowcut_freq, highcut_freq, Fs, order=4)
 
-    alpha = butter_bandpass_filter(inputdata[:,0], 10, 20, Fs, order=6)
-    beta = butter_bandpass_filter(inputdata[:,0], 22, 35, Fs, order=6)
-
-
-    f = open("samplesigs.csv",'w')
-    for x in range(0,500):
-        f.write("{0},{1}\n".format(alpha[16000+x],beta[16000+x]))
-    f.close()
-    print "Written!"
-    plt.figure
-    plt.plot(alpha)
-    plt.plot(beta)
+    # alpha = butter_bandpass_filter(inputdata[:,0], 10, 20, Fs, order=6)
+    # beta = butter_bandpass_filter(inputdata[:,0], 22, 35, Fs, order=6)
+    #
+    #
+    # f = open("samplesigs.csv",'w')
+    # for x in range(0,500):
+    #     f.write("{0},{1}\n".format(alpha[16000+x],beta[16000+x]))
+    # f.close()
+    # print "Written!"
+    # plt.figure
+    # plt.plot(alpha)
+    # plt.plot(beta)
     #or just demean the data
     # signal1 = signal1 - float(np.mean(signal1))
     # signal2 = signal2 - float(np.mean(signal2))

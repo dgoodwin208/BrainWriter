@@ -34,9 +34,6 @@
 #include "ofxFft.h"
 #include "ofxInlineFilter.h"
 
-using namespace ofx::IO;
-
-
 class ofApp: public ofBaseApp
 {
 public:
@@ -98,5 +95,6 @@ public:
     vector<vector <float> > timeslicesPerChannel;
     vector<float> fftoutput;
     vector<float> timeslice;
-    ofxInlineFilter filt;
+    ofxInlineFilter filtAlpha;
+    ofxInlineFilter filtBeta;
 };

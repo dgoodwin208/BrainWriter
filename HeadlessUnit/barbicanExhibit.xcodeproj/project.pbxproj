@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		11570D8B196042B4003FBAB4 /* ofxInlineFilter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 11570D89196042B4003FBAB4 /* ofxInlineFilter.cpp */; };
 		117385EC19494979003108FB /* ofxHttpUtils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 117385EA19494979003108FB /* ofxHttpUtils.cpp */; };
 		1192F98E1955361D00DBF35E /* ofxOpenBCI.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1192F9841955361D00DBF35E /* ofxOpenBCI.cpp */; };
 		1192FA231955393400DBF35E /* IpEndpointName.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1192F9FD1955393400DBF35E /* IpEndpointName.cpp */; };
@@ -84,6 +85,8 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		11570D89196042B4003FBAB4 /* ofxInlineFilter.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ofxInlineFilter.cpp; sourceTree = "<group>"; };
+		11570D8A196042B4003FBAB4 /* ofxInlineFilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ofxInlineFilter.h; sourceTree = "<group>"; };
 		117385E919494979003108FB /* ofxHttpTypes.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ofxHttpTypes.h; sourceTree = "<group>"; };
 		117385EA19494979003108FB /* ofxHttpUtils.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ofxHttpUtils.cpp; sourceTree = "<group>"; };
 		117385EB19494979003108FB /* ofxHttpUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ofxHttpUtils.h; sourceTree = "<group>"; };
@@ -493,6 +496,8 @@
 				E4B69E1D0A3A1BDC003C02F2 /* main.cpp */,
 				19c22cd05d10f78b32ff80c6be3a9385 /* ofApp.cpp */,
 				84f6287fa54b66c746947875f6690182 /* ofApp.h */,
+				11570D89196042B4003FBAB4 /* ofxInlineFilter.cpp */,
+				11570D8A196042B4003FBAB4 /* ofxInlineFilter.h */,
 			);
 			path = src;
 			sourceTree = SOURCE_ROOT;
@@ -603,6 +608,7 @@
 				1192FA2B1955393400DBF35E /* OscTypes.cpp in Sources */,
 				1192FA301955393400DBF35E /* ofxOscSender.cpp in Sources */,
 				1192FA2A1955393400DBF35E /* OscReceivedElements.cpp in Sources */,
+				11570D8B196042B4003FBAB4 /* ofxInlineFilter.cpp in Sources */,
 				1192FAA11956047800DBF35E /* ofxFftBasic.cpp in Sources */,
 				1192FA271955393400DBF35E /* UdpSocketWin.cpp in Sources */,
 				1192FAA31956047800DBF35E /* ofxProcessFFT.cpp in Sources */,
