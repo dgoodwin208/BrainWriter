@@ -97,6 +97,7 @@ class ofxOpenBCI {
     bool filterApplied;
     int streamingMode;
     
+    int missedCyclesCounter;
     vector<bool> enabledChannels;
 
     bool isNewDataPacketAvailable();

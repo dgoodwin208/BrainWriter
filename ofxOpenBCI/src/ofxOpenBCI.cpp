@@ -29,6 +29,12 @@
 #define MAX_LEFTOVER_SERIAL_BYTES 200
 #define COUNT_TO_MICROVOLT .02232
 
+//Assuming most apps will run 30-60Hz, setting the counter to be 900 means that
+//If the app has looked for data for 30 seconds minutes without seeing anything, then the streaming needs
+//To be started again
+
+#define MAX_MISSED_CYCLES 900
+
 string command_stop = "s";
 string command_startText = "x";
 string command_startBinary = "b";
@@ -48,7 +54,7 @@ string ofxOpenBCI::usedPort;
 ofxOpenBCI::ofxOpenBCI()
 {
     cout << "Trying to set it up...\n";
-    dataMode =DATAMODE_BIN;
+    dataMode = DATAMODE_BIN_4CHAN; //DATAMODE_BIN;
     
     int currBuffIndex = 0;
     int num_channels = 8;
@@ -97,6 +103,7 @@ ofxOpenBCI::ofxOpenBCI()
 //ASSUMES A ONE CHARACTER INPUT!
 void ofxOpenBCI::sendSignalToBoard(string input){
     serialDevice.writeBytes((unsigned char*)(input + "\n").c_str(),2);
+    serialDevice.flush();
     return;
 }
 //start the data transfer using the current mode
@@ -259,7 +266,15 @@ vector<dataPacket_ADS1299> ofxOpenBCI::getData()
         output.push_back(outputPacketBuffer.front());
         outputPacketBuffer.pop();
     }
-
+    if (output.size()==0){
+        missedCyclesCounter++;
+        if (missedCyclesCounter>MAX_MISSED_CYCLES)
+        {
+            printf("SEES NO DATA ON DEVICE SO STARTING STREAMING AGAIN");
+            startStreaming();
+            missedCyclesCounter=0;
+        }
+    }
     return output;
 }
 

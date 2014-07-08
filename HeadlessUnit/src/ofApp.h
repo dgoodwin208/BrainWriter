@@ -98,13 +98,10 @@ public:
     float user2_last_Alpha;
     float user2_last_Beta;
     
-    
-    
-
     int uploadTimePeriod;
     time_t lastUploadTime;
     void UploadDataToTheWeb();
-    
+
     
     //-------- For posting to the OSC -------//
     ofxOscSender sender;
@@ -115,7 +112,6 @@ public:
     
     ofxFft* fft_chan1;
 
-    
     //---------The battery of vectors to store time domain data-----//
     vector<float> timeslice_board1_chan1;
     vector<float> timeslice_board2_chan1;

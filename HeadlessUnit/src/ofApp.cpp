@@ -38,7 +38,7 @@
 #define MINIMUM_SETTLE_TIME 3
 
 #define HOST "localhost"
-#define POST_URL "http://ancient-anchorage-9291.herokuapp.com/data"
+#define POST_URL "REMOVEDFORGITHUB"
 #define SENDER_PORT 12345
 #define RECEIVER_PORT 6789
 
@@ -51,6 +51,7 @@
 
 #define MAX_OUTPUT_TO_GAME 100
 #define DEBUG_MODE 0
+
 //------------------------------------------------------------------------------
 void ofApp::setup()
 {
