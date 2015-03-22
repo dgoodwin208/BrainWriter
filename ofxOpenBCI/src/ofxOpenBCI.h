@@ -108,6 +108,8 @@ class ofxOpenBCI {
     
     private: int curBuffIndex;
     private: int interpretAsInt32(byte byteArray[]);
+    private: int interpret24bitAsInt32(byte byteArray[]);
+    private: int interpret16bitAsInt32(byte byteArray[]);
     vector<byte>leftoverBytes;
 
     private: vector<byte> currBuffer;

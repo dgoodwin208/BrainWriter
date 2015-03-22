@@ -64,9 +64,9 @@ ofxOpenBCI::ofxOpenBCI()
     //Loop through all available
     //TODO: determine if mac/pc to automatically seed deviceQueryString
     #if IS_MAC
-    string deviceQueryString = ".*/tty[.]usb.*";
+        string deviceQueryString = ".*/tty[.]usb.*";
     #else
-    string deviceQueryString = "COM*";
+        string deviceQueryString = "COM*";
     #endif
     
     std::vector<ofSerialDeviceInfo> devicesInfo = serialDevice.getDeviceList();
@@ -210,6 +210,7 @@ void ofxOpenBCI::update(bool echoChar) {
         //And if there's no complete packets in this data
         if (lastPacketEndIdx<0){
             cout << "No complete packets found of " << currBuffer.size() << "bytes\n";
+            cout << ofToString(currBuffer);
             break;
         }
     }
@@ -304,6 +305,8 @@ void ofxOpenBCI::changeChannelState(int Ichan,bool activate) {
 
 //interpret the data. Only called when the last seen byte was BYTE_END
 /*
+ 
+ V2:
  A Packet looks like this:
  0: Start_char 0xA0
  1: Length of payload
@@ -317,6 +320,26 @@ void ofxOpenBCI::changeChannelState(int Ichan,bool activate) {
  30: Chan6 (32 bit signed int
  34-37: Chan7 (32 bit signed int
  38: End_char 0xC0
+ 
+ 
+ V3:
+ A Packet looks like this:
+ 0: Start_char 0xA0
+ 1: sample number
+ 2-4: Chan0 (24-bit 2s compliment)
+ 5-7: Chan1 (24-bit 2s compliment)
+ 8-10: Chan2 (24-bit 2s compliment)
+ 11: Chan3 (24-bit 2s compliment)
+ 14: Chan4 (24-bit 2s compliment)
+ 17: Chan5 (24-bit 2s compliment)
+ 20: Chan6 (24-bit 2s compliment)
+ 23: Chan7 (24-bit 2s compliment)
+ 26-27: X-channel accel
+ 28-29: Y-channel accel
+ 30-31: Z-channel accel
+ 32: 0xC0
+
+ 
  */
 
 //Rewrote the interpretBinaryMessage fxn to avoid stumbling over a BYTE_END or BYTE_START on accident
@@ -325,33 +348,34 @@ int ofxOpenBCI::interpretBinaryMessageForward(int startIdx) {
     //assume curBuffIndex has already been incremented to the next starting spot
     int endIdx = startIdx;
     
-    unsigned char n_bytes = currBuffer[startIdx + 1]; //this is the number of bytes in the payload
+    unsigned char n_bytes = 32; //this is the number of bytes in the payload
     
     //Counting forward, do we see the BYTE_END?
-    if (currBuffer[(startIdx + 1 + n_bytes + 1)] != BYTE_END) {
+    if (currBuffer[(startIdx + n_bytes)] != BYTE_END) {
         printf("Bad packet: %i, %i. Got: %i \n", startIdx, endIdx, startIdx + 1 + n_bytes + 1);
         endIdx = -1;
     }
     else{
         
-        endIdx = (startIdx + 1 + n_bytes + 1);
+        endIdx = (startIdx + n_bytes);
         
         int nInt32 = n_bytes / 4;
         
         dataPacket_ADS1299 dataPacket = dataPacket_ADS1299(nInt32);
         dataPacket.timestamp = time(NULL);
         
-        dataPacket.sampleIndex = interpretAsInt32(&currBuffer[startIdx+2]); //read the int32 value
+        dataPacket.sampleIndex = (char)currBuffer[startIdx+1]; //read the int32 value
         
-        //Full doc here: http://www.openbci.com/forums/topic/understanding-serial-interface/
-        startIdx += 6;  //increment the start index
+        //Full doc here: http://docs.openbci.com/software/02-OpenBCI_Streaming_Data_Format#openbci-v3-data-format-binary-format
+        startIdx += 2;  //increment the start index
         
         int nValToRead = min<int>(nInt32-1,dataPacket.values.size());
         for (int i=0; i < nValToRead;i++) {
-            dataPacket.values[i] = interpretAsInt32(&currBuffer[startIdx])*COUNT_TO_MICROVOLT; //read the int32 value
+            dataPacket.values[i] = interpret24bitAsInt32(&currBuffer[startIdx])*COUNT_TO_MICROVOLT; //read the int32 value
             startIdx += 4;  //increment the start index
         }
         outputPacketBuffer.push(dataPacket);
+        
     }
     
     
@@ -360,24 +384,36 @@ int ofxOpenBCI::interpretBinaryMessageForward(int startIdx) {
 }
 
 
-int ofxOpenBCI::interpretAsInt32(byte byteArray[]) {
-    //big endian
-//    return int(
-//               ((0xFF & byteArray[0]) << 24) |
-//               ((0xFF & byteArray[1]) << 16) |
-//               ((0xFF & byteArray[2]) << 8) |
-//               (0xFF & byteArray[3])
-//               );
-    
-    //little endian (worked for Mac)
-    return int(
-               ((0xFF & byteArray[3]) << 24) |
-               ((0xFF & byteArray[2]) << 16) |
-               ((0xFF & byteArray[1]) << 8) |
-               (0xFF & byteArray[0])
-               );
+
+//This is used to interpret the 24-bit accelerometer data (in 2s complement)
+int ofxOpenBCI::interpret24bitAsInt32(byte byteArray[]) {
+    //little endian
+    int newInt = (
+                  ((0xFF & byteArray[0]) << 16) |
+                  ((0xFF & byteArray[1]) << 8) |
+                  (0xFF & byteArray[2])
+                  );
+    if ((newInt & 0x00800000) > 0) {
+        newInt |= 0xFF000000;
+    } else {
+        newInt &= 0x00FFFFFF;
+    }
+    return newInt;
 }
 
+//This is used to interpret the 16-bit accelerometer data
+int ofxOpenBCI::interpret16bitAsInt32(byte byteArray[]) {
+    int newInt = (
+                  ((0xFF & byteArray[0]) << 8) |
+                  (0xFF & byteArray[1])
+                  );
+    if ((newInt & 0x00008000) > 0) {
+        newInt |= 0xFFFF0000;
+    } else {
+        newInt &= 0x0000FFFF;
+    }
+    return newInt;
+}
 
 int ofxOpenBCI::interpretTextMessage() {
     //still have to code this!
