@@ -80,6 +80,7 @@ void testApp::setup(){
     rSoundCount = 0;
     lSoundCount = 0;
     
+    ofSetFrameRate(100);
 }
 
 //--------------------------------------------------------------
@@ -88,6 +89,7 @@ void testApp::update(){
     unsigned long long timestamp = ofGetElapsedTimeMicros();
 	// check for waiting messages
     
+    cout << ofGetElapsedTimeMillis() << "\n";
     
     ofxbci.update(false); //Param is to echo to the command line
     if(ofxbci.isNewDataPacketAvailable())
@@ -176,15 +178,6 @@ void testApp::update(){
 
 //--------------------------------------------------------------
 void testApp::draw(){
-
-	string buf;
-	buf = "listening for osc messages on port" + ofToString(PORT);
-	ofDrawBitmapString(buf, 10, 20);
-
-	// draw mouse state
-	buf = "eeg: " + ofToString(mouseX, 4) +  " " + ofToString(mouseY, 4);
-	ofDrawBitmapString(buf, 430, 20);
-	ofDrawBitmapString(mouseButtonState, 580, 20);
 
 
     //Window is 640 x 480
