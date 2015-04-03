@@ -5,7 +5,7 @@
 #include "ofxOpenBCIOSC.h"
 // listen on port 12345
 #define PORT 5000
-#define NUM_MSG_STRINGS 20
+
 
 class testApp : public ofBaseApp {
 	public:
@@ -29,8 +29,7 @@ class testApp : public ofBaseApp {
         ofxOpenBCIOSC ofxbci;
     
 		int current_msg_string;
-		string msg_strings[NUM_MSG_STRINGS];
-		float timers[NUM_MSG_STRINGS];
+
 
 		int mouseX, mouseY;
 		string mouseButtonState;
@@ -46,5 +45,8 @@ class testApp : public ofBaseApp {
     
         int rOnsetFlag;
         int lOnsetFlag;
+    
+        int rSoundCount;
+        int lSoundCount;
 };
 
